@@ -12,6 +12,6 @@ describe('App', () => {
   it('should have a greeting as the title', () => {
     const { getByText } = render(<App />);
 
-    expect(getByText(/Welcome use-mutative-project/gi)).toBeTruthy();
+    expect(getByText(/Welcome to UseMutative/gi)).toBeTruthy();
   });
 });
