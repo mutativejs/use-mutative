@@ -1,5 +1,5 @@
 {
-  "name": "use-mutative",
+  "name": "use-mutative-project",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "./src",
   "projectType": "application",
@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/use-mutative"
+        "outputPath": "dist/use-mutative-project"
       },
       "configurations": {
         "development": {},
@@ -20,15 +20,15 @@
       "executor": "@nrwl/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "use-mutative:build"
+        "buildTarget": "use-mutative-project:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "use-mutative:build:development",
+          "buildTarget": "use-mutative-project:build:development",
           "hmr": true
         },
         "production": {
-          "buildTarget": "use-mutative:build:production",
+          "buildTarget": "use-mutative-project:build:production",
           "hmr": false
         }
       }

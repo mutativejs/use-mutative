@@ -5,7 +5,7 @@ import NxWelcome from './nx-welcome';
 export function App() {
   return (
     <>
-      <NxWelcome title="use-mutative" />
+      <NxWelcome title="use-mutative-project" />
       <div />
     </>
   );
