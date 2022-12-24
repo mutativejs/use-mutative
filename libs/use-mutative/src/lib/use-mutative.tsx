@@ -42,7 +42,7 @@ export function useMutative<
 
   return [
     val,
-    useCallback((updater) => {
+    useCallback((updater: any) => {
       const isFn = typeof updater === 'function';
 
       const result = (create as any)(
