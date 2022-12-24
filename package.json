@@ -10,7 +10,7 @@
   "private": true,
   "dependencies": {
     "core-js": "^3.6.5",
-    "mutative": "^0.2.0",
+    "mutative": "^0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "regenerator-runtime": "0.13.7",
