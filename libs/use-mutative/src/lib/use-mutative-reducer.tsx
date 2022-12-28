@@ -1,9 +1,19 @@
-import { Dispatch, useCallback, useReducer } from 'react';
+import { Dispatch, useCallback, useEffect, useReducer, useRef } from 'react';
 
-import { create } from 'mutative';
+import { create, Patch } from 'mutative';
+// TODO: fix type in mutative
+import type { Options } from 'mutative/dist/interface';
 
 export type MutativeReducer<R, I> = (draftState: R, action: I) => void | R;
 
+export const MUTATIVE_ROOT_OVERRIDE = Symbol('MUTATIVE_ROOT_OVERRIDE');
+
+export type PatchState<T> =
+  | {
+      actions: T[] | typeof MUTATIVE_ROOT_OVERRIDE;
+      patches: [Patch[], Patch[]];
+    }
+  | undefined;
 /**
  * provide you can create immutable state easily with mutable way in reducer.
  *
@@ -39,33 +49,147 @@ export type MutativeReducer<R, I> = (draftState: R, action: I) => void | R;
  * }
  * ```
  */
-export function useMutativeReducer<R, I, K = (arg: R) => R>(
+export function useMutativeReducer<
+  /**
+   * initial state
+   */
+  R,
+  /**
+   * action type
+   */
+  I,
+  O extends boolean = false,
+  F extends boolean = false
+>(
   reducer: MutativeReducer<R, I>,
   initialState: R,
-  initializer?: K
-): [R, Dispatch<I>] {
+  initializer?: (arg: R) => R,
+  options?: Options<O, F>
+): O extends true ? [R, Dispatch<I>, PatchState<I>] : [R, Dispatch<I>] {
+  const optionsRef = useRef(options);
+  const enablePatchesRef = useRef(options?.enablePatches);
+
+  const finalStateRef = useRef<unknown>();
+  const actionsRef = useRef<I[]>([]);
+  const countRef = useRef(0);
+
+  const patchesRef = useRef<PatchState<I>>(undefined);
+
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    options?.enablePatches !== enablePatchesRef.current
+  ) {
+    console.warn(
+      '[useMutative] should not change enablePatches after first mounted'
+    );
+  }
+
   const mutativeReducer = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (state: any, action: any) => {
-      let replaceResult: unknown = void 0;
+      countRef.current++;
+      const actions = actionsRef.current;
 
-      const newState = create(state, (draft) => {
-        const result = reducer(draft, action);
+      const finalState = finalStateRef.current;
 
-        if (
-          result &&
-          // when be same object, not be replace
-          draft !== result
-        ) {
-          replaceResult = result;
+      if (finalState) {
+        countRef.current = 0;
+        actionsRef.current.length = 0;
+        finalStateRef.current = undefined;
+        return finalState;
+      }
+
+      // when that reduce be the length of action, execute all actions once
+      if (countRef.current === actions.length) {
+        const options = optionsRef.current;
+        const enablePatches = enablePatchesRef.current;
+        const actions = actionsRef.current;
+
+        let replaceResult: unknown = void 0;
+
+        const newState = create(
+          state,
+          (draft) => {
+            actions.forEach((ac) => {
+              const result = reducer(replaceResult ?? draft, ac);
+
+              if (
+                result &&
+                // when not be same object, mean that need replace all
+                draft !== result &&
+                // also not be replace object
+                replaceResult !== result
+              ) {
+                // TODO: do a clone when draft
+                replaceResult = { ...result };
+              }
+            });
+
+            countRef.current = 0;
+          },
+          options
+        );
+
+        if (enablePatches) {
+          patchesRef.current = replaceResult
+            ? {
+                actions: MUTATIVE_ROOT_OVERRIDE,
+                // TODO: should get the patch from source object
+                patches: [[], []],
+              }
+            : {
+                actions: [...actions],
+                patches: newState.slice(1),
+              };
+
+          const toState = replaceResult ?? newState[0];
+
+          finalStateRef.current = toState;
+          return toState;
         }
-      });
 
-      return replaceResult ?? newState;
+        const toState = replaceResult ?? newState;
+        finalStateRef.current = toState;
+
+        return toState;
+      }
+
+      return state;
     },
     [reducer]
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return useReducer(mutativeReducer, initialState, initializer as any);
+  const [state, sourceReducer] = useReducer(
+    mutativeReducer,
+    initialState,
+    initializer as never
+  );
+
+  useEffect(() => {
+    countRef.current = 0;
+    actionsRef.current.length = 0;
+    finalStateRef.current = undefined;
+    patchesRef.current = undefined;
+  });
+
+  const current = patchesRef.current;
+  return (
+    enablePatchesRef.current
+      ? [
+          state,
+          (action: I) => {
+            actionsRef.current.push(action);
+            sourceReducer(action);
+          },
+          current,
+        ]
+      : [
+          state,
+          (action: I) => {
+            actionsRef.current.push(action);
+            sourceReducer(action);
+          },
+        ]
+  ) as never;
 }
