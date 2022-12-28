@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { useMutativeReducer } from 'use-mutative';
 
@@ -21,16 +21,63 @@ function reducer(
 }
 
 export const UseMutativeReducerExample: FC = () => {
-  const [state, dispatch] = useMutativeReducer(reducer, initialState);
+  console.log('UseMutativeReducerExample');
+  const [state, dispatch, patchState] = useMutativeReducer(
+    reducer,
+    initialState,
+    undefined,
+    { enablePatches: true }
+  );
+
+  useEffect(() => {
+    console.log('🚀 ~ patchState', patchState);
+  });
 
   return (
     <div>
       Count: {state.count}
       <br />
       <br />
-      <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>
-      <button onClick={() => dispatch({ type: 'decrement' })}>Decrement</button>
-      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+      <button
+        onClick={() => {
+          let i = 0;
+
+          while (++i <= 5) {
+            dispatch({ type: 'increment' });
+          }
+        }}
+      >
+        +
+      </button>
+      <button
+        onClick={() => {
+          let i = 0;
+
+          while (++i <= 5) {
+            dispatch({ type: 'decrement' });
+          }
+        }}
+      >
+        -
+      </button>
+      <button
+        onClick={() => {
+          dispatch({ type: 'decrement' });
+          dispatch({ type: 'decrement' });
+          dispatch({ type: 'decrement' });
+          dispatch({ type: 'reset' });
+          dispatch({ type: 'increment' });
+          dispatch({ type: 'increment' });
+          dispatch({ type: 'increment' });
+          dispatch({ type: 'decrement' });
+          dispatch({ type: 'decrement' });
+          dispatch({ type: 'decrement' });
+        }}
+      >
+        <span role="img" aria-label="clear">
+          🧹
+        </span>
+      </button>
     </div>
   );
 };
