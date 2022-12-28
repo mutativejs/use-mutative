@@ -14,6 +14,7 @@ export const UseMutativeWithPatchesExample: FC = () => {
 
   const [histories, setHistories] = useMutative<
     {
+      state: typeof state;
       patches: Patch[];
       inversePatches: Patch[];
     }[]
@@ -29,6 +30,7 @@ export const UseMutativeWithPatchesExample: FC = () => {
           draft.splice(activeHistoryIndex + 1);
 
           draft.push({
+            state,
             patches,
             inversePatches,
           });
@@ -44,7 +46,14 @@ export const UseMutativeWithPatchesExample: FC = () => {
     inversePatches,
     patches,
     setHistories,
+    state,
   ]);
+
+  const resetIndex = (i: number) => {
+    writeHistoryStateRef.current = false;
+    setActiveHistoryIndex(i);
+    setState(histories[i].state);
+  };
 
   return (
     <div>
@@ -115,7 +124,10 @@ export const UseMutativeWithPatchesExample: FC = () => {
             backgroundColor: activeHistoryIndex === -1 ? 'yellow' : undefined,
           }}
         >
-          origin
+          <span role="img" aria-label="Start">
+            🏁
+          </span>{' '}
+          <button onClick={() => resetIndex(-1)}>reset</button>
         </li>
         {histories.map((x, i) => {
           return (
@@ -126,7 +138,10 @@ export const UseMutativeWithPatchesExample: FC = () => {
                   activeHistoryIndex === i ? 'yellow' : undefined,
               }}
             >
-              {i}
+              <span role="img" aria-label="Step">
+                🚘
+              </span>{' '}
+              <button onClick={() => resetIndex(i)}>reset</button>
             </li>
           );
         })}
