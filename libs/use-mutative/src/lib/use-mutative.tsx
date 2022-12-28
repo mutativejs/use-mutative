@@ -1,16 +1,19 @@
-import { Dispatch, useCallback, useRef, useState } from 'react';
+import { Dispatch, useCallback } from 'react';
 
 import type { Patch } from 'mutative';
-import { create } from 'mutative';
+// TODO: fix type in mutative
+import type { Options } from 'mutative/dist/interface';
 
-export type MutativeHook<S, E extends boolean> = [
-  S,
-  (draft: S | Dispatch<S>) => E extends true ? [Patch[], Patch[]] : void
-];
+import { useMutativeReducer } from './use-mutative-reducer';
 
-const emptyFn = () => {
-  //
-};
+function reducer<S extends object>(draft: S, action: S | Dispatch<S>) {
+  if (typeof action === 'function') {
+    action(draft);
+    return;
+  }
+
+  return action;
+}
 
 /**
  * provide you can create immutable state easily with mutable way.
@@ -55,62 +58,29 @@ const emptyFn = () => {
  */
 export function useMutative<
   S extends object | (() => object),
-  E extends boolean = false
+  O extends boolean = false,
+  F extends boolean = false
 >(
   initialValue: S,
-  options?: { enablePatches?: E }
-): MutativeHook<S extends () => unknown ? ReturnType<S> : S, E> {
-  const optionsRef = useRef(options);
-  const enablePatchesRef = useRef(options?.enablePatches);
+  options?: Options<O, F>
+): O extends true
+  ? [S, (draft: S | Dispatch<S>) => void, Patch[], Patch[]]
+  : [S, (draft: S | Dispatch<S>) => void] {
+  const initIsFn = typeof initialValue === 'function';
 
-  if (
-    process.env.NODE_ENV !== 'production' &&
-    options?.enablePatches !== enablePatchesRef.current
-  ) {
-    console.warn(
-      '[useMutative] should not change enablePatches after first mounted'
-    );
-  }
-
-  const [val, updateValue] = useState(() => {
-    const result = create(
-      typeof initialValue === 'function' ? initialValue() : initialValue,
-      emptyFn,
-      options
-    );
-
-    return enablePatchesRef.current ? result[0] : result;
-  });
-
-  const valRef = useRef(val);
-  console.log('🚀 ~ val', val);
-  valRef.current = val;
+  const [state, dispatch, patchesState] = useMutativeReducer(
+    reducer as any,
+    initialValue,
+    (initIsFn ? initialValue : undefined) as any,
+    options
+  );
 
   return [
-    val,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useCallback((updater: any) => {
-      const isFn = typeof updater === 'function';
-      const enablePatches = enablePatchesRef.current;
-      const options = optionsRef.current;
-
-      const result = isFn
-        ? create(
-            valRef.current,
-            (...args) => {
-              updater(...args);
-            },
-            options
-          )
-        : create(updater, emptyFn, options);
-
-      if (enablePatches) {
-        updateValue(result[0]);
-
-        return result.slice(1);
-      }
-
-      updateValue(result);
+    state,
+    useCallback((updater: unknown) => {
+      dispatch(updater);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
-  ];
+    ...(patchesState?.patches || []),
+  ] as never;
 }
