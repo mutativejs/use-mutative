@@ -3,14 +3,15 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { apply, Patch } from 'mutative';
 import { useMutative } from 'use-mutative';
 
+const initState = {
+  foo: 0,
+};
+
 export const UseMutativeWithPatchesExample: FC = () => {
   const [count, setCount] = useState(0);
-  const [state, setState, patches, inversePatches] = useMutative(
-    {
-      foo: 0,
-    },
-    { enablePatches: true }
-  );
+  const [state, setState, patches, inversePatches] = useMutative(initState, {
+    enablePatches: true,
+  });
 
   const [histories, setHistories] = useMutative<
     {
@@ -52,7 +53,7 @@ export const UseMutativeWithPatchesExample: FC = () => {
   const resetIndex = (i: number) => {
     writeHistoryStateRef.current = false;
     setActiveHistoryIndex(i);
-    setState(histories[i].state);
+    setState(histories[i]?.state ?? initState);
   };
 
   return (
