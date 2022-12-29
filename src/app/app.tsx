@@ -10,7 +10,7 @@ export function App() {
   return (
     <div className="h-full grid grid-cols-12 p-12 gap-5">
       <nav className="col-span-full md:col-span-6 lg:col-span-5 flex flex-col">
-        <div className='flex-auto flex flex-col justify-end items-center'>
+        <div className="flex-auto flex flex-col justify-end items-center">
           <h1 className="text-6xl text-yellow-300 font-bold text-center">
             UseMutative
           </h1>
@@ -28,10 +28,8 @@ export function App() {
         <UseMutativeWithPatchesExample /> */}
         </div>
       </nav>
-      <main className="col-span-full md:col-span-6 lg:col-span-7 flex flex-col items-center justify-center overflow-hidden">
-        <div className="mt-4 w-full overflow-auto [&>pre]:!m-0 flex-auto">
-          <CodePreview code={useMutativeExampleCode} />
-        </div>
+      <main className="col-span-full md:col-span-6 lg:col-span-7 rounded overflow-hidden flex">
+        <CodePreview code={useMutativeExampleCode} />
       </main>
     </div>
   );
