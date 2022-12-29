@@ -1,4 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: 'Fira Code', monospace, sans-serif;
+
+  @apply bg-blue-700 text-white;
+}
+
+@layer components {
+  .button {
+    @apply px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform rounded-lg focus:outline-none focus:ring focus:ring-opacity-80;
+  }
+
+  .button-primary {
+    @apply bg-yellow-600 hover:bg-yellow-500 focus:ring-yellow-300;
+  }
+
+  .button-secondary {
+    @apply bg-green-600 hover:bg-green-500 focus:ring-green-300;
+  }
+}
