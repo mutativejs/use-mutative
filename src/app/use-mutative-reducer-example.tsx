@@ -43,7 +43,7 @@ export const UseMutativeReducerExample: FC = () => {
         </div>
       </div>
 
-      <div className="flex gap-4 mt-4">
+      <div className="flex gap-4 mt-4 flex-wrap">
         <button
           className="button button-primary"
           onClick={() => dispatch({ type: 'increment' })}
