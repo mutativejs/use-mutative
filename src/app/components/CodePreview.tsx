@@ -2,22 +2,32 @@ import 'prismjs/themes/prism-okaidia.css';
 
 import { FC } from 'react';
 
-import Highlight, { defaultProps } from 'prism-react-renderer';
+import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 
 import { CopyButton } from './CopyButton';
 
 type CodePreviewProps = {
   code: string;
+  language?: Language;
+  classes?: {
+    root?: string;
+    copyButton?: string;
+  };
 };
 
-export const CodePreview: FC<CodePreviewProps> = ({ code }) => {
+export const CodePreview: FC<CodePreviewProps> = ({
+  code,
+  language = 'tsx',
+  classes = {},
+}) => {
+  const { root, copyButton } = classes;
   return (
-    <div className="flex relative w-full">
+    <div className={`flex ${root} h-full overflow-hidden relative rounded`}>
       <div className="w-full overflow-auto [&>pre]:!m-0">
         <Highlight
           {...defaultProps}
           code={code}
-          language="tsx"
+          language={language}
           theme={undefined}
         >
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
@@ -37,8 +47,12 @@ export const CodePreview: FC<CodePreviewProps> = ({ code }) => {
             </pre>
           )}
         </Highlight>
-        <CopyButton className="absolute right-2 top-1" code={code} />
       </div>
+      <CopyButton
+        data-copy
+        className={`copy-button absolute right-2 top-1 ${copyButton}`}
+        code={code}
+      />
     </div>
   );
 };

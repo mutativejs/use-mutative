@@ -17,7 +17,7 @@ export const UseMutativeExample: FC = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       <div className='text-center'>
-        <span className="px-2 py-1 bg-white rounded">{state.title}</span>
+        <div className="px-2 py-1 bg-white rounded">{state.title}</div>
         <p className="text-2xl mt-4">{state.cars.length}</p>
       </div>
 
