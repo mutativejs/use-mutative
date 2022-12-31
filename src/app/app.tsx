@@ -80,7 +80,7 @@ export function App() {
           <Component />
         </div>
       </nav>
-      <main className="h-screen md:h-auto col-span-full md:col-span-6 lg:col-span-7 overflow-hidden flex flex-col">
+      <main className="h-screen md:h-auto col-span-full md:col-span-6 lg:col-span-7 overflow-hidden flex flex-col shadow-2xl">
         <ul className="bg-blue-500 rounded-t flex flex-wrap flex-none overflow-hidden">
           {tabs.map((key) => {
             const { title } = viewMap[key];
