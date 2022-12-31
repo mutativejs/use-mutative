@@ -2,82 +2,72 @@ import { FC, useEffect } from 'react';
 
 import { useMutativeReducer } from 'use-mutative';
 
-type State = { count: number };
-
-const initialState = { count: 0 };
-
 function reducer(
-  draft: State,
+  draft: typeof initState,
   action: { type: 'reset' | 'increment' | 'decrement' }
 ) {
   switch (action.type) {
     case 'reset':
-      return initialState;
+      return initState;
     case 'increment':
-      return void draft.count++;
+      draft.title = draft.title += 'l';
+      draft.cars.push({ text: '🚘' });
+      return void 0;
     case 'decrement':
-      return void draft.count--;
+      draft.title = draft.title.slice(0, -1);
+      draft.cars.pop();
+      return void 0;
   }
 }
 
 export const UseMutativeReducerExample: FC = () => {
-  console.log('UseMutativeReducerExample');
   const [state, dispatch, patchState] = useMutativeReducer(
     reducer,
-    initialState,
+    initState,
     undefined,
     { enablePatches: true }
   );
 
   useEffect(() => {
-    console.log('🚀 ~ patchState', patchState);
+    console.log('🚀 ~ re-render', patchState);
   });
 
   return (
-    <div>
-      Count: {state.count}
-      <br />
-      <br />
-      <button
-        onClick={() => {
-          let i = 0;
+    <div className="flex flex-col justify-center items-center h-full">
+      <div className="text-center">
+        <p className="text-2xl mt-4">{state.title}</p>
+        <div className="px-2 py-1 bg-white text-black rounded min-h-[32px]">
+          {state.cars.map((car, i) => (
+            <span key={i}>{car.text}</span>
+          ))}
+        </div>
+      </div>
 
-          while (++i <= 5) {
-            dispatch({ type: 'increment' });
-          }
-        }}
-      >
-        +
-      </button>
-      <button
-        onClick={() => {
-          let i = 0;
-
-          while (++i <= 5) {
-            dispatch({ type: 'decrement' });
-          }
-        }}
-      >
-        -
-      </button>
-      <button
-        onClick={() => {
-          dispatch({ type: 'decrement' });
-          dispatch({ type: 'decrement' });
-          dispatch({ type: 'decrement' });
-          dispatch({ type: 'reset' });
-          dispatch({ type: 'increment' });
-          dispatch({ type: 'increment' });
-          dispatch({ type: 'increment' });
-          dispatch({ type: 'decrement' });
-          dispatch({ type: 'decrement' });
-          dispatch({ type: 'decrement' });
-        }}
-      >
-        <span role="img" aria-label="clear">
-          🧹
-        </span>
-      </button>
+      <div className="flex gap-4 mt-4">
+        <button
+          className="button button-primary"
+          onClick={() => dispatch({ type: 'increment' })}
+        >
+          Increment
+        </button>
+        <button
+          className="button button-primary"
+          onClick={() => dispatch({ type: 'decrement' })}
+        >
+          Decrement
+        </button>
+        <button
+          className="button button-secondary"
+          onClick={() => dispatch({ type: 'reset' })}
+        >
+          rest
+        </button>
+      </div>
     </div>
   );
+};
+
+const initState = {
+  title: 'cool',
+  cars: [{ text: '🚘' }],
 };

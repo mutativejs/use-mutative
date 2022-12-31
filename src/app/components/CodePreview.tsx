@@ -20,10 +20,10 @@ export const CodePreview: FC<CodePreviewProps> = ({
   language = 'tsx',
   classes = {},
 }) => {
-  const { root, copyButton } = classes;
+  const { root = 'rounded', copyButton } = classes;
   return (
-    <div className={`flex ${root} h-full overflow-hidden relative rounded`}>
-      <div className="w-full overflow-auto [&>pre]:!m-0">
+    <div className={`flex h-full overflow-hidden relative ${root}`}>
+      <div className="w-full overflow-auto [&>pre]:!m-0 [&>pre]:!rounded-none">
         <Highlight
           {...defaultProps}
           code={code}

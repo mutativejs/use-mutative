@@ -4,18 +4,16 @@ import { apply, Patch } from 'mutative';
 import { useMutative } from 'use-mutative';
 
 const initState = {
-  foo: 0,
+  count: 0,
 };
 
 export const UseMutativeWithPatchesExample: FC = () => {
-  const [count, setCount] = useState(0);
   const [state, setState, patches, inversePatches] = useMutative(initState, {
     enablePatches: true,
   });
 
   const [histories, setHistories] = useMutative<
     {
-      state: typeof state;
       patches: Patch[];
       inversePatches: Patch[];
     }[]
@@ -25,20 +23,17 @@ export const UseMutativeWithPatchesExample: FC = () => {
   const writeHistoryStateRef = useRef(false);
 
   useEffect(() => {
-    if (patches && inversePatches) {
-      if (writeHistoryStateRef.current) {
-        setHistories((draft) => {
-          draft.splice(activeHistoryIndex + 1);
+    if (writeHistoryStateRef.current && patches && inversePatches) {
+      setHistories((draft) => {
+        draft.splice(activeHistoryIndex + 1);
 
-          draft.push({
-            state,
-            patches,
-            inversePatches,
-          });
-
-          setActiveHistoryIndex(draft.length - 1);
+        draft.push({
+          patches,
+          inversePatches,
         });
-      }
+
+        setActiveHistoryIndex(draft.length - 1);
+      });
     }
     writeHistoryStateRef.current = false;
   }, [
@@ -50,104 +45,127 @@ export const UseMutativeWithPatchesExample: FC = () => {
     state,
   ]);
 
-  const resetIndex = (i: number) => {
+  const rollbackIndex = (toIndex: number) => {
+    if (toIndex === activeHistoryIndex) return;
+
+    const currInversePatches: Patch[] = [];
+    if (toIndex < activeHistoryIndex) {
+      let i = activeHistoryIndex;
+      while (i > toIndex) {
+        currInversePatches.push(...histories[i].inversePatches);
+        i--;
+      }
+    } else {
+      let i = activeHistoryIndex + 1;
+      while (i <= toIndex) {
+        currInversePatches.push(...histories[i].patches);
+        i++;
+      }
+    }
+
     writeHistoryStateRef.current = false;
-    setActiveHistoryIndex(i);
-    setState(histories[i]?.state ?? initState);
+    setActiveHistoryIndex(toIndex);
+    setState((draft) => apply(draft, currInversePatches));
   };
 
+  useEffect(() => {
+    console.log('🚀 ~ re-render');
+  });
+
   return (
-    <div>
-      <br />
-      <br />
+    <div className="flex flex-col justify-center items-center h-full">
+      <div className="text-center">
+        <p className="text-2xl mt-4">{state.count}</p>
+        <p className="text-md mt-4">Click below to go back to that history.</p>
 
-      <button
-        onClick={() => {
-          setCount((c) => c + 1);
-        }}
-      >
-        force re-render button {count}
-      </button>
-      <br />
-      <br />
-      <button
-        onClick={() => {
-          let i = 0;
+        <div className="px-2 py-1 bg-white text-black rounded">
+          <ul className="flex flex-wrap">
+            <li>
+              <button
+                className={`px-2 py-1 rounded ${
+                  activeHistoryIndex === -1 ? 'bg-yellow-300' : ''
+                }`}
+                onClick={() => rollbackIndex(-1)}
+              >
+                <span role="img" aria-label="Start">
+                  🏁
+                </span>
+              </button>
+            </li>
+            {histories.map((x, i) => {
+              return (
+                <li key={i}>
+                  <button
+                    className={`px-2 py-1 rounded ${
+                      activeHistoryIndex === i ? 'bg-yellow-300' : ''
+                    }`}
+                    onClick={() => rollbackIndex(i)}
+                  >
+                    <span role="img" aria-label="Step">
+                      🚘
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
 
-          while (++i <= 5) {
-            setState((draft) => {
-              draft.foo += 1;
-            });
-          }
-          writeHistoryStateRef.current = true;
-        }}
-      >
-        +
-      </button>
-      {histories.length > 0 && (
-        <>
-          <button
-            disabled={activeHistoryIndex < 0}
-            onClick={() => {
-              writeHistoryStateRef.current = false;
-
-              const currHistory = histories[activeHistoryIndex];
-              setActiveHistoryIndex(activeHistoryIndex - 1);
-              setState((draft) => apply(draft, currHistory.inversePatches));
-            }}
-          >
-            <span role="img" aria-label="Backward">
-              ↩️
-            </span>
-          </button>
-          <button
-            disabled={activeHistoryIndex + 1 === histories.length}
-            onClick={() => {
-              writeHistoryStateRef.current = false;
-
-              const nextIndex = activeHistoryIndex + 1;
-              const currHistory = histories[nextIndex];
-              setActiveHistoryIndex(nextIndex);
-              setState((draft) => apply(draft, currHistory.patches));
-            }}
-          >
-            <span role="img" aria-label="Backward">
-              ↪️
-            </span>
-          </button>
-        </>
-      )}
-      <pre>{JSON.stringify(state, null, 2)}</pre>
-      <h4>Histories</h4>
-      <ul>
-        <li
-          style={{
-            backgroundColor: activeHistoryIndex === -1 ? 'yellow' : undefined,
+      <div className="flex gap-4 mt-4">
+        <button
+          className="button button-primary"
+          onClick={() => {
+            let i = 0;
+            while (++i <= 5) {
+              setState((draft) => {
+                draft.count += 1;
+              });
+            }
+            writeHistoryStateRef.current = true;
           }}
         >
-          <span role="img" aria-label="Start">
-            🏁
-          </span>{' '}
-          <button onClick={() => resetIndex(-1)}>reset</button>
-        </li>
-        {histories.map((x, i) => {
-          return (
-            <li
-              key={i}
-              style={{
-                backgroundColor:
-                  activeHistoryIndex === i ? 'yellow' : undefined,
-              }}
-            >
-              <span role="img" aria-label="Step">
-                🚘
-              </span>{' '}
-              <button onClick={() => resetIndex(i)}>reset</button>
-            </li>
-          );
-        })}
-      </ul>
-      <pre>{JSON.stringify(histories, null, 2)}</pre>
+          Increment
+        </button>
+
+        <div className="text-4xl flex gap-2">
+          {histories.length > 0 && (
+            <>
+              <button
+                disabled={activeHistoryIndex < 0}
+                className="disabled:opacity-60"
+                onClick={() => {
+                  writeHistoryStateRef.current = false;
+
+                  const currHistory = histories[activeHistoryIndex];
+                  setActiveHistoryIndex(activeHistoryIndex - 1);
+                  setState((draft) => apply(draft, currHistory.inversePatches));
+                }}
+              >
+                <span role="img" aria-label="Backward">
+                  ↩️
+                </span>
+              </button>
+              <button
+                disabled={activeHistoryIndex + 1 === histories.length}
+                className="disabled:opacity-60"
+                onClick={() => {
+                  writeHistoryStateRef.current = false;
+
+                  const nextIndex = activeHistoryIndex + 1;
+                  const currHistory = histories[nextIndex];
+                  setActiveHistoryIndex(nextIndex);
+                  setState((draft) => apply(draft, currHistory.patches));
+                }}
+              >
+                <span role="img" aria-label="Backward">
+                  ↪️
+                </span>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
