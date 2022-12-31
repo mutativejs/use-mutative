@@ -76,7 +76,7 @@ export const UseMutativeWithPatchesExample: FC = () => {
     <div className="flex flex-col justify-center items-center h-full">
       <div className="text-center">
         <p className="text-2xl mt-4">{state.count}</p>
-        <p className="text-md mt-4">Click below to go back to that history.</p>
+        <p className="text-md mt-4">Click below item to go back to that history.</p>
 
         <div className="px-2 py-1 bg-white text-black rounded">
           <ul className="flex flex-wrap">
