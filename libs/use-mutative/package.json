@@ -22,7 +22,7 @@
     "mutation",
     "react"
   ],
-  "dependencies": {
+  "devDependencies": {
     "mutative": "^0.2.2"
   },
   "peerDependencies": {
