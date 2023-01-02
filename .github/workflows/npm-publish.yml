@@ -1,0 +1,27 @@
+name: Npm publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install
+        run: npm install
+
+      - name: Test 🧪
+        run: npm run nx run use-mutative:test:production
+
+      - name: Build 🔧
+        run: npm run nx run use-mutative:build
+
+      - name: Publish 🔧
+        run: cd dist/libs/use-mutative && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          CI: true
