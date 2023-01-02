@@ -21,9 +21,7 @@ jobs:
         run: npm run nx run use-mutative:build
 
       - name: Publish 🔧
-        run: |
-          cd dist/libs/use-mutative
-          npm publish
+        run: npm publish ./dist/libs/use-mutative
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
           CI: true
