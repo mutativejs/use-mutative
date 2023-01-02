@@ -68,7 +68,7 @@ export function App() {
           </h6>
           <div className="mt-10 md:mt-20 w-96 max-w-full">
             <CodePreview
-              code="npm install use-mutative"
+              code="npm install mutative use-mutative"
               language="bash"
               classes={{
                 copyButton: 'mt-2 mr-1',

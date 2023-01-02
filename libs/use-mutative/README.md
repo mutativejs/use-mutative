@@ -12,7 +12,7 @@ A hook to use [mutative](https://github.com/unadlib/mutative) as a React hook to
 ## Installation
 
 ```bash
-npm install use-mutative
+npm install mutative use-mutative
 ```
 
 ## API
