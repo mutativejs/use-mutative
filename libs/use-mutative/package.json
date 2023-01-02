@@ -1,6 +1,27 @@
 {
   "name": "use-mutative",
+  "description": "A hook to use mutative as a React hook to efficient update react state immutable with mutable way.",
   "version": "0.0.2",
+  "author": "unadlib",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unadlib/use-mutative.git"
+  },
+  "bugs": {
+    "url": "https://github.com/unadlib/use-mutative/issues"
+  },
+  "homepage": "https://unadlib.github.io/use-mutative",
+  "keywords": [
+    "react",
+    "hook",
+    "mutative",
+    "immutable",
+    "mutable",
+    "immutability",
+    "mutation",
+    "react"
+  ],
   "dependencies": {
     "mutative": "^0.2.1"
   },
