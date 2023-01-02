@@ -31,21 +31,6 @@ function reducer(
 }
 
 describe('useMutativeReducer', () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  // it.only('should get the latest message with a spy', () => {
-  //   const spy = vi.spyOn(mutative, 'create');
-  //   expect(spy.getMockName()).toEqual('create');
-
-  //   mutative.create({}, () => {
-  //     //
-  //   });
-
-  //   expect(spy).toBeCalled();
-  // });
-
   it('[useMutativeReducer] with normal init state', () => {
     const { result } = renderHook(() => useMutativeReducer(reducer, initState));
 
@@ -143,6 +128,7 @@ describe('useMutativeReducer', () => {
     const [, , patchState2] = result.current;
 
     expect(patchState2!.actions).toBe(MUTATIVE_ROOT_OVERRIDE);
+    expect(patchState2!.patches).toEqual([[], []]);
   });
 
   it('[useMutativeReducer] show warning when change `enablePatches` dynamically', () => {
@@ -158,5 +144,58 @@ describe('useMutativeReducer', () => {
 
     expect(spy).toBeCalled();
     expect(spy).toBeCalledTimes(2);
+  });
+
+  it('[useMutativeReducer] show dispatch many times in one tick', () => {
+    const { result } = renderHook(() =>
+      useMutativeReducer(reducer, initState, undefined, { enablePatches: true })
+    );
+    const [, dispatch] = result.current;
+
+    act(() => {
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+    });
+
+    const [state, , patchGroup] = result.current;
+
+    expect(state).toEqual({
+      title: 'changed title lllll',
+      cars: [
+        { text: '🚘' },
+        { text: '🚘' },
+        { text: '🚘' },
+        { text: '🚘' },
+        { text: '🚘' },
+        { text: '🚘' },
+      ],
+    });
+
+    expect(patchGroup).toEqual({
+      actions: [
+        { type: 'increment' },
+        { type: 'increment' },
+        { type: 'increment' },
+        { type: 'increment' },
+        { type: 'increment' },
+      ],
+      patches: [
+        [
+          { op: 'add', path: ['cars', 1], value: { text: '🚘' } },
+          { op: 'add', path: ['cars', 2], value: { text: '🚘' } },
+          { op: 'add', path: ['cars', 3], value: { text: '🚘' } },
+          { op: 'add', path: ['cars', 4], value: { text: '🚘' } },
+          { op: 'add', path: ['cars', 5], value: { text: '🚘' } },
+          { op: 'replace', path: ['title'], value: 'changed title lllll' },
+        ],
+        [
+          { op: 'replace', path: ['cars', 'length'], value: 1 },
+          { op: 'replace', path: ['title'], value: 'changed title ' },
+        ],
+      ],
+    });
   });
 });
