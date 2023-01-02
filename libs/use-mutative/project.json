@@ -27,6 +27,11 @@
             "glob": "libs/use-mutative/README.md",
             "input": ".",
             "output": "."
+          },
+          {
+            "glob": "LICENSE",
+            "input": ".",
+            "output": "."
           }
         ],
         "format": ["esm", "cjs"]
