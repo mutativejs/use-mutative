@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import { CodePreview } from './components/CodePreview';
+import { GitHub } from './components/GitHub';
 import { UseMutativeExample } from './use-mutative-example';
 // @ts-ignore
 import useMutativeExampleCode from './use-mutative-example?raw';
@@ -100,6 +101,16 @@ export function App() {
               </li>
             );
           })}
+          <li className="flex-auto" />
+          <li className="">
+            <a
+              title="Go to GitHub"
+              className="flex justify-center items-center px-2 text-white h-full text-sm focus:outline-none focus:bg-yellow-500/70 hover:bg-yellow-500/70"
+              href="https://github.com/unadlib/use-mutative"
+            >
+              <GitHub />
+            </a>
+          </li>
         </ul>
         <CodePreview code={code} classes={{ root: 'flex-auto rounded-b' }} />
       </main>
