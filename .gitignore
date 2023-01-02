@@ -15,6 +15,7 @@ node_modules
 .c9/
 *.launch
 .settings/
+*coverage/
 *.sublime-workspace
 
 # IDE - VSCode
