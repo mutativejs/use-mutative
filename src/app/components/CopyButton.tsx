@@ -28,7 +28,11 @@ export const CopyButton: FC<CopyButtonProps> = ({ code, ...props }) => {
   return (
     <div {...props}>
       {isCopied ? (
-        <p className="p-2">Copied!</p>
+        <p className="p-2 pt-1">
+          <span role="img" aria-label="Copied">
+            ✅
+          </span>
+        </p>
       ) : (
         <button onClick={handleCopy} className="p-2 bg-gray-100/10 rounded">
           <svg
