@@ -59,19 +59,20 @@ function reducer<S extends object>(draft: S, action: S | Dispatch<S>) {
 export function useMutative<
   S extends object | (() => object),
   O extends boolean = false,
-  F extends boolean = false
+  F extends boolean = false,
+  K = S extends () => unknown ? ReturnType<S> : S
 >(
   initialValue: S,
   options?: Options<O, F>
 ): O extends true
-  ? [S, (draft: S | Dispatch<S>) => void, Patch[], Patch[]]
-  : [S, (draft: S | Dispatch<S>) => void] {
+  ? [K, (draft: K | Dispatch<K>) => void, Patch[], Patch[]]
+  : [K, (draft: K | Dispatch<K>) => void] {
   const initIsFn = typeof initialValue === 'function';
 
   const [state, dispatch, patchesState] = useMutativeReducer(
-    reducer as any,
+    reducer as never,
     initialValue,
-    (initIsFn ? initialValue : undefined) as any,
+    (initIsFn ? initialValue : undefined) as never,
     options
   );
 
@@ -81,6 +82,8 @@ export function useMutative<
       dispatch(updater);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
-    ...(patchesState?.patches || []),
+    ...(options?.enablePatches
+      ? patchesState?.patches || [undefined, undefined]
+      : []),
   ] as never;
 }

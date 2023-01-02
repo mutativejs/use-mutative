@@ -153,8 +153,6 @@ export function useMutativeReducer<
 
         return toState;
       }
-
-      return state;
     },
     [reducer]
   );
