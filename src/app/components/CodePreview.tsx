@@ -1,8 +1,9 @@
 import 'prismjs/themes/prism-okaidia.css';
 
-import { FC } from 'react';
+import type { FC } from 'react';
 
-import Highlight, { defaultProps, Language } from 'prism-react-renderer';
+import type { Language } from 'prism-react-renderer';
+import Highlight, { defaultProps } from 'prism-react-renderer';
 
 import { CopyButton } from './CopyButton';
 

@@ -1,8 +1,7 @@
-import { Dispatch, useCallback } from 'react';
+import type { Dispatch} from 'react';
+import { useCallback } from 'react';
 
-import type { Patch } from 'mutative';
-// TODO: fix type in mutative
-import type { Options } from 'mutative/dist/interface';
+import type  { Patch, Options } from 'mutative';
 
 import { useMutativeReducer } from './use-mutative-reducer';
 

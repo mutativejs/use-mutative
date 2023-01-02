@@ -1,8 +1,8 @@
-import { Dispatch, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { Dispatch } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-import { create, Patch } from 'mutative';
-// TODO: fix type in mutative
-import type { Options } from 'mutative/dist/interface';
+import type { Options, Patch } from 'mutative';
+import { create } from 'mutative';
 
 export type MutativeReducer<R, I> = (draftState: R, action: I) => void | R;
 
