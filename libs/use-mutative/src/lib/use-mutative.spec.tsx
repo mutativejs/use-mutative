@@ -12,7 +12,11 @@ describe('useMutative', () => {
     expect(state).toEqual({ items: [1] });
     expect(typeof setState).toBe('function');
 
-    act(() => setState((draft) => draft.items.push(2)));
+    act(() =>
+      setState((draft) => {
+        draft.items.push(2);
+      })
+    );
 
     const [state2] = result.current;
     expect(state2).toEqual({ items: [1, 2] });
@@ -31,7 +35,11 @@ describe('useMutative', () => {
     expect(state).toEqual({ items: [1] });
     expect(typeof setState).toBe('function');
 
-    act(() => setState((draft) => draft.items.push(2)));
+    act(() =>
+      setState((draft) => {
+        draft.items.push(2);
+      })
+    );
 
     const [state2] = result.current;
     expect(state2).toEqual({ items: [1, 2] });
@@ -54,7 +62,11 @@ describe('useMutative', () => {
     expect(patches).toBe(undefined);
     expect(inversePatches).toBe(undefined);
 
-    act(() => setState((draft) => draft.items.push(2)));
+    act(() =>
+      setState((draft) => {
+        draft.items.push(2);
+      })
+    );
 
     const [state2, , patches2, inversePatches2] = result.current;
 

@@ -128,7 +128,39 @@ describe('useMutativeReducer', () => {
     const [, , patchState2] = result.current;
 
     expect(patchState2!.actions).toBe(MUTATIVE_ROOT_OVERRIDE);
-    expect(patchState2!.patches).toEqual([[], []]);
+    expect(patchState2!.patches).toEqual([
+      [
+        {
+          op: 'replace',
+          path: [],
+          value: {
+            cars: [
+              {
+                text: '🚘',
+              },
+            ],
+            title: 'changed title ',
+          },
+        },
+      ],
+      [
+        {
+          op: 'replace',
+          path: [],
+          value: {
+            cars: [
+              {
+                text: '🚘',
+              },
+              {
+                text: '🚘',
+              },
+            ],
+            title: 'changed title l',
+          },
+        },
+      ],
+    ]);
   });
 
   it('[useMutativeReducer] show warning when change `enablePatches` dynamically', () => {
