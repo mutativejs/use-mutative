@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { act, renderHook } from '@testing-library/react';
+import type { Draft } from 'mutative';
 import React from 'react';
 
 import {
@@ -13,7 +14,7 @@ const initState = {
 };
 
 function reducer(
-  draft: typeof initState,
+  draft: Draft<Readonly<typeof initState>>,
   action: { type: 'reset' | 'increment' | 'decrement' }
 ) {
   switch (action.type) {
