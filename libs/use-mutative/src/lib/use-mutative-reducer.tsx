@@ -92,6 +92,7 @@ export function useMutativeReducer<
 
       const finalState = finalStateRef.current;
 
+      // for strict mode, directly return value
       if (finalState) {
         countRef.current = 0;
         actionsRef.current.length = 0;
@@ -134,8 +135,23 @@ export function useMutativeReducer<
           patchesRef.current = replaceResult
             ? {
                 actions: MUTATIVE_ROOT_OVERRIDE,
-                // TODO: should get the patch from source object
-                patches: [[], []],
+                // when have overwrite date behavior, return replace result back
+                patches: [
+                  [
+                    {
+                      op: 'replace',
+                      path: [],
+                      value: replaceResult,
+                    },
+                  ],
+                  [
+                    {
+                      op: 'replace',
+                      path: [],
+                      value: state,
+                    },
+                  ],
+                ],
               }
             : {
                 actions: [...actions],
@@ -172,7 +188,6 @@ export function useMutativeReducer<
     patchesRef.current = undefined;
   });
 
-  const current = patchesRef.current;
   return (
     enablePatchesRef.current
       ? [
@@ -181,7 +196,7 @@ export function useMutativeReducer<
             actionsRef.current.push(action);
             sourceReducer(action);
           },
-          current,
+          patchesRef.current,
         ]
       : [
           state,
