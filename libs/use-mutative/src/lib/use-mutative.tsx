@@ -1,14 +1,13 @@
-import type { Dispatch} from 'react';
+import type { Dispatch } from 'react';
 import { useCallback } from 'react';
 
-import type  { Patch, Options } from 'mutative';
+import type { Patch, Options } from 'mutative';
 
 import { useMutativeReducer } from './use-mutative-reducer';
 
 function reducer<S extends object>(draft: S, action: S | Dispatch<S>) {
   if (typeof action === 'function') {
-    action(draft);
-    return;
+    return action(draft);
   }
 
   return action;
