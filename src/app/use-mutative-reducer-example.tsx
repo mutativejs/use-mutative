@@ -1,10 +1,12 @@
 import type { FC } from 'react';
 import { useEffect } from 'react';
 
+import type { DraftedObject } from 'use-mutative';
 import { useMutativeReducer } from 'use-mutative';
 
 function reducer(
-  draft: typeof initState,
+  // with DraftedObject can make your Readonly fields become not read-only
+  draft: DraftedObject<Readonly<typeof initState>>,
   action: { type: 'reset' | 'increment' | 'decrement' }
 ) {
   switch (action.type) {
@@ -71,4 +73,5 @@ export const UseMutativeReducerExample: FC = () => {
 const initState = {
   title: 'cool',
   cars: [{ text: '🚘' }],
-};
+  // Readonly also be work
+} as Readonly<{ title: string; cars: { text: string }[] }>;

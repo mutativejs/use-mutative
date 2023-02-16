@@ -16,6 +16,13 @@ export const UseMutativeExample: FC = () => {
   // also can overwrite whole data directly.
   const handleReset = () => setState(initState);
 
+  // also can overwrite whole data with call back
+  const handleReset2 = () =>
+    setState((draft) => {
+      // if you need group some previous data and reset the state just like normal useState also is fine to do that.
+      return { ...initState, title: `${draft.title}!` };
+    });
+
   useEffect(() => {
     console.log('🚀 ~ re-render');
   });
@@ -38,6 +45,9 @@ export const UseMutativeExample: FC = () => {
         <button className="button button-secondary" onClick={handleReset}>
           rest
         </button>
+        <button className="button button-secondary" onClick={handleReset2}>
+          reset with return
+        </button>
       </div>
     </div>
   );
@@ -46,4 +56,5 @@ export const UseMutativeExample: FC = () => {
 const initState = {
   title: 'cool',
   cars: [{ text: '🚘' }],
-};
+  // Readonly also be work
+} as Readonly<{ title: string; cars: { text: string }[] }>;

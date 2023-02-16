@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { act, renderHook } from '@testing-library/react';
+import type { Draft } from 'mutative';
 import React from 'react';
 
 import {
@@ -13,7 +14,7 @@ const initState = {
 };
 
 function reducer(
-  draft: typeof initState,
+  draft: Draft<Readonly<typeof initState>>,
   action: { type: 'reset' | 'increment' | 'decrement' }
 ) {
   switch (action.type) {
@@ -128,7 +129,39 @@ describe('useMutativeReducer', () => {
     const [, , patchState2] = result.current;
 
     expect(patchState2!.actions).toBe(MUTATIVE_ROOT_OVERRIDE);
-    expect(patchState2!.patches).toEqual([[], []]);
+    expect(patchState2!.patches).toEqual([
+      [
+        {
+          op: 'replace',
+          path: [],
+          value: {
+            cars: [
+              {
+                text: '🚘',
+              },
+            ],
+            title: 'changed title ',
+          },
+        },
+      ],
+      [
+        {
+          op: 'replace',
+          path: [],
+          value: {
+            cars: [
+              {
+                text: '🚘',
+              },
+              {
+                text: '🚘',
+              },
+            ],
+            title: 'changed title l',
+          },
+        },
+      ],
+    ]);
   });
 
   it('[useMutativeReducer] show warning when change `enablePatches` dynamically', () => {
