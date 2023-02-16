@@ -56,4 +56,5 @@ export const UseMutativeExample: FC = () => {
 const initState = {
   title: 'cool',
   cars: [{ text: '🚘' }],
-};
+  // Readonly also be work
+} as Readonly<{ title: string; cars: { text: string }[] }>;

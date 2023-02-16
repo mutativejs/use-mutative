@@ -1,9 +1,12 @@
 import type { Dispatch } from 'react';
 import { useCallback } from 'react';
 
-import type { Patch, Options } from 'mutative';
+import type { Options, Patch } from 'mutative';
 
+import type { DraftedObject } from './use-mutative-reducer';
 import { useMutativeReducer } from './use-mutative-reducer';
+
+export type MutativeDispatch<T> = (draft: DraftedObject<T>) => void | T;
 
 function reducer<S extends object>(draft: S, action: S | Dispatch<S>) {
   if (typeof action === 'function') {
@@ -63,8 +66,8 @@ export function useMutative<
   initialValue: S,
   options?: Options<O, F>
 ): O extends true
-  ? [K, (draft: K | Dispatch<K>) => void, Patch[], Patch[]]
-  : [K, (draft: K | Dispatch<K>) => void] {
+  ? [K, (draft: K | MutativeDispatch<K>) => void, Patch[], Patch[]]
+  : [K, (draft: K | MutativeDispatch<K>) => void] {
   const initIsFn = typeof initialValue === 'function';
 
   const [state, dispatch, patchesState] = useMutativeReducer(
