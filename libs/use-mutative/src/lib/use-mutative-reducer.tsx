@@ -129,7 +129,7 @@ export function useMutativeReducer<
                 replaceResult !== result
               ) {
                 // TODO: do a clone when draft
-                replaceResult = { ...result };
+                replaceResult = Array.isArray(result) ? [...result] : { ...result };
               }
             });
 
