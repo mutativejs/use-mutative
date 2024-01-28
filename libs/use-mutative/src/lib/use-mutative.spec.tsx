@@ -25,6 +25,44 @@ describe('useMutative', () => {
     expect(state2).toEqual({ items: [1, 2] });
   });
 
+  it('[useMutative] array state with callback return', () => {
+    const source: Readonly<number[]> = [1];
+
+    const { result } = renderHook(() => useMutative(source));
+
+    expect(result.current).toHaveLength(2);
+
+    const [state, setState] = result.current;
+    expect(state).toEqual([1]);
+    expect(typeof setState).toBe('function');
+
+    act(() =>
+      setState(() => ([1, 2]))
+    );
+
+    const [state2] = result.current;
+    expect(state2).toEqual([1, 2]);
+  });
+
+  it('[useMutative] array state with new value', () => {
+    const source: Readonly<number[]> = [1];
+
+    const { result } = renderHook(() => useMutative(source));
+
+    expect(result.current).toHaveLength(2);
+
+    const [state, setState] = result.current;
+    expect(state).toEqual([1]);
+    expect(typeof setState).toBe('function');
+
+    act(() =>
+      setState([1, 2])
+    );
+
+    const [state2] = result.current;
+    expect(state2).toEqual([1, 2]);
+  });
+
   it('[useMutative] with initializer', () => {
     const { result } = renderHook(() =>
       useMutative(() => ({
