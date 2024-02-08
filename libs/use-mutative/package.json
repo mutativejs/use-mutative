@@ -1,7 +1,7 @@
 {
   "name": "use-mutative",
   "description": "A hook to use mutative as a React hook to efficient update react state immutable with mutable way.",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "author": "unadlib",
   "license": "MIT",
   "repository": {
