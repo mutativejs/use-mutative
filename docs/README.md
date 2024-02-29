@@ -1,3 +1,5 @@
+use-mutative / [Exports](modules.md)
+
 # useMutative
 
 ![](https://github.com/unadlib/use-mutative/actions/workflows/main-merge.yml/badge.svg)

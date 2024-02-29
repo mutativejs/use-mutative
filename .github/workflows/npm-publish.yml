@@ -1,33 +1,23 @@
-name: Npm publish
-
+name: Publish Package to npmjs
 on:
   release:
     types: [created]
-
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
-
-      # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-          
-      - name: Install
-        run: npm install
-
-      - name: Test 🧪
-        run: npm run nx run use-mutative:test:production
-
-      - name: Build 🔧
-        run: npm run nx run use-mutative:build
-
-      - name: Publish 🔧
-        run: npm publish ./dist/libs/use-mutative
+      - run: yarn
+      - run: yarn build
+      - run: yarn test
+      - run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
           CI: true
