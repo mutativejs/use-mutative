@@ -22,36 +22,36 @@ Provide you can create immutable state easily with mutable way.
 import { useMutative } from 'use-mutative';
 
 export function App() {
-  const [state, setState] = useMutative(
-    {
-      foo: 'bar',
-      list: [
-        { text: 'todo' },
-      ],
-    },
+  const [state, setState] = useMutative({
+    foo: 'bar',
+    list: [{ text: 'todo' }],
+  });
+  return (
+    <>
+      <button
+        onClick={() => {
+          // set value with draft mutable
+          setState((draft) => {
+            draft.foo = `${draft.foo} 2`;
+            draft.list.push({ text: 'todo 2' });
+          });
+        }}
+      >
+        click
+      </button>
+      <button
+        onClick={() => {
+          // also can override value directly
+          setState({
+            foo: 'bar 2',
+            list: [{ text: 'todo 2' }],
+          });
+        }}
+      >
+        click
+      </button>
+    </>
   );
-  <button
-    onClick={() => {
-      // set value with draft mutable
-      setState((draft) => {
-        draft.foo = `${draft.foo} 2`;
-        draft.list.push({ text: 'todo 2' });
-      });
-    }}
-  >
-    click
-  </button>
-  <button
-    onClick={() => {
-      // also can override value directly
-      setState({
-        foo: 'bar 2',
-        list: [{ text: 'todo 2' }],
-      });
-    }}
-  >
-    click
-  </button>
 }
 ```
 
