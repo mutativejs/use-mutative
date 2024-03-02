@@ -87,7 +87,7 @@ function useMutative<
     } else {
       setState(create(currentState, () => updater, options));
     }
-  }, []);
+  }, [state]);
   return (
     options?.enablePatches
       ? [state[0], updateState, state[1], state[2]]

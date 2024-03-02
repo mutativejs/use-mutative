@@ -1,6 +1,6 @@
 {
   "name": "use-mutative",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A hook to use Mutative as a React hook to efficient update react state immutable with mutable way",
   "main": "dist/index.cjs.js",
   "unpkg": "dist/index.umd.js",

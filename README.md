@@ -73,8 +73,13 @@ Provide you can create immutable state easily with mutable way in reducer way.
 import { rawReturn } from 'mutative';
 import { useMutativeReducer } from 'use-mutative';
 
+
+const initialState = {
+  count: 0,
+};
+
 function reducer(
-  draft: State,
+  draft: Draft<typeof initialState>,
   action: { type: 'reset' | 'increment' | 'decrement' }
 ) {
   switch (action.type) {
