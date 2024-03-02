@@ -3,6 +3,7 @@ use-mutative / [Exports](modules.md)
 # useMutative
 
 ![Node CI](https://github.com/unadlib/use-mutative/workflows/Node%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/unadlib/use-mutative/badge.svg?branch=main)](https://coveralls.io/github/unadlib/use-mutative?branch=main)
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 
