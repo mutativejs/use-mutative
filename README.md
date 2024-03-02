@@ -7,6 +7,8 @@
 
 A hook to use [Mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
 
+`useMutative` is 2-6x faster than `useState` with spread operation, more than 10x faster than `useImmer`. Read more about the performance comparison in [Mutative](https://mutative.js.org/docs/getting-started/performance).
+
 ## Installation
 
 Yarn

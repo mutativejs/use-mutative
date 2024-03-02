@@ -43,7 +43,7 @@
 
 #### Defined in
 
-[index.ts:30](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L30)
+[index.ts:30](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L30)
 
 ___
 
@@ -75,7 +75,7 @@ ___
 
 #### Defined in
 
-[index.ts:109](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L109)
+[index.ts:109](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L109)
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 #### Defined in
 
-[index.ts:31](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L31)
+[index.ts:31](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L31)
 
 ## Functions
 
@@ -154,7 +154,7 @@ expect(nextState).toEqual({ items: [1, 2] });
 
 #### Defined in
 
-[index.ts:64](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L64)
+[index.ts:64](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L64)
 
 ___
 
@@ -218,7 +218,7 @@ expect(result.current[0]).toEqual({ count: 1 });
 
 #### Defined in
 
-[index.ts:111](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L111)
+[index.ts:111](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L111)
 
 ▸ **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
 
@@ -278,7 +278,7 @@ expect(result.current[0]).toEqual({ count: 1 });
 
 #### Defined in
 
-[index.ts:124](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L124)
+[index.ts:124](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L124)
 
 ▸ **useMutativeReducer**\<`S`, `A`, `F`, `O`\>(`reducer`, `initialState`, `initializer?`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
 
@@ -337,4 +337,4 @@ expect(result.current[0]).toEqual({ count: 1 });
 
 #### Defined in
 
-[index.ts:137](https://github.com/unadlib/use-mutative/blob/9cb9855/src/index.ts#L137)
+[index.ts:137](https://github.com/unadlib/use-mutative/blob/8e6ff91/src/index.ts#L137)
