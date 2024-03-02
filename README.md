@@ -5,8 +5,6 @@
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 
-[Example](https://unadlib.github.io/use-mutative/#useMutative)
-
 A hook to use [mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
 
 ## Installation

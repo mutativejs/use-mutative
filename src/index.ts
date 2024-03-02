@@ -42,6 +42,24 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
 
 /**
  * `useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
+ *
+ *  @example
+ *
+ * ```ts
+ * import { act, renderHook } from '@testing-library/react';
+ *
+ * import { useMutative } from './src/index';
+ *
+ * const { result } = renderHook(() => useMutative({ items: [1] }));
+ * const [state, setState] = result.current;
+ * act(() =>
+ *   setState((draft) => {
+ *     draft.items.push(2);
+ *   })
+ * );
+ * const [nextState] = result.current;
+ * expect(nextState).toEqual({ items: [1, 2] });
+ * ```
  */
 function useMutative<
   S,
@@ -130,6 +148,35 @@ function useMutativeReducer<
 
 /**
  * `useMutativeReducer` is a hook that is similar to `useReducer` but it uses `mutative` to handle the state updates.
+ *
+ * @example
+ *
+ * ```ts
+ * import { act, renderHook } from '@testing-library/react';
+ * import { type Draft } from 'mutative';
+ *
+ * import { useMutativeReducer } from './src/index';
+ *
+ * const { result } = renderHook(() =>
+ *   useMutativeReducer(
+ *     (
+ *       draft: Draft<Readonly<{ count: number }>>,
+ *       action: {
+ *         type: 'increment';
+ *       }
+ *     ) => {
+ *       switch (action.type) {
+ *         case 'increment':
+ *           draft.count += 1;
+ *       }
+ *     },
+ *     { count: 0 }
+ *   )
+ * );
+ * const [, dispatch] = result.current;
+ * act(() => dispatch({ type: 'increment' }));
+ * expect(result.current[0]).toEqual({ count: 1 });
+ * ```
  */
 function useMutativeReducer<
   S,

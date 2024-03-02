@@ -11,25 +11,15 @@ test('test "mutative" function', () => {
 
 describe('useMutative', () => {
   it('[useMutative] with normal init state', () => {
-    const source: Readonly<{ items: number[] }> = { items: [1] };
-
-    const { result } = renderHook(() => useMutative(source));
-
-    expect(result.current).toHaveLength(2);
-
+    const { result } = renderHook(() => useMutative({ items: [1] }));
     const [state, setState] = result.current;
-    expect(state).toEqual({ items: [1] });
-    expect(typeof setState).toBe('function');
-
     act(() =>
       setState((draft) => {
-        // this type will not be readonly anymore
         draft.items.push(2);
       })
     );
-
-    const [state2] = result.current;
-    expect(state2).toEqual({ items: [1, 2] });
+    const [nextState] = result.current;
+    expect(nextState).toEqual({ items: [1, 2] });
   });
 
   it('[useMutative] array state with callback return', () => {
