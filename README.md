@@ -114,3 +114,7 @@ const [state, dispatch, patches, inversePatches] = useMutativeReducer(
 ```
 
 patches format will follow https://jsonpatch.com/, but the `"path"` field be array structure.
+
+## License
+
+`use-mutative` is [MIT licensed](https://github.com/unadlib/use-mutative/blob/main/LICENSE).
