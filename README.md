@@ -1,11 +1,10 @@
 # useMutative
 
-![](https://github.com/unadlib/use-mutative/actions/workflows/npm-publish.yml/badge.svg)
-![Node CI](https://github.com/unadlib/mutability/workflows/Node%20CI/badge.svg)
+![Node CI](https://github.com/unadlib/use-mutative/workflows/Node%20CI/badge.svg)
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 
-A hook to use [mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
+A hook to use [Mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
 
 ## Installation
 
