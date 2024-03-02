@@ -2,14 +2,21 @@ use-mutative / [Exports](modules.md)
 
 # useMutative
 
-![](https://github.com/unadlib/use-mutative/actions/workflows/main-merge.yml/badge.svg)
-![](https://github.com/unadlib/use-mutative/actions/workflows/npm-publish.yml/badge.svg)
+![Node CI](https://github.com/unadlib/use-mutative/workflows/Node%20CI/badge.svg)
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 
-A hook to use [mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
+A hook to use [Mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
 
 ## Installation
+
+Yarn
+
+```bash
+yarn add mutative use-mutative
+```
+
+NPM
 
 ```bash
 npm install mutative use-mutative
@@ -25,36 +32,36 @@ Provide you can create immutable state easily with mutable way.
 import { useMutative } from 'use-mutative';
 
 export function App() {
-  const [state, setState] = useMutative(
-    {
-      foo: 'bar',
-      list: [
-        { text: 'todo' },
-      ],
-    },
+  const [state, setState] = useMutative({
+    foo: 'bar',
+    list: [{ text: 'todo' }],
+  });
+  return (
+    <>
+      <button
+        onClick={() => {
+          // set value with draft mutable
+          setState((draft) => {
+            draft.foo = `${draft.foo} 2`;
+            draft.list.push({ text: 'todo 2' });
+          });
+        }}
+      >
+        click
+      </button>
+      <button
+        onClick={() => {
+          // also can override value directly
+          setState({
+            foo: 'bar 2',
+            list: [{ text: 'todo 2' }],
+          });
+        }}
+      >
+        click
+      </button>
+    </>
   );
-  <button
-    onClick={() => {
-      // set value with draft mutable
-      setState((draft) => {
-        draft.foo = `${draft.foo} 2`;
-        draft.list.push({ text: 'todo 2' });
-      });
-    }}
-  >
-    click
-  </button>
-  <button
-    onClick={() => {
-      // also can override value directly
-      setState({
-        foo: 'bar 2',
-        list: [{ text: 'todo 2' }],
-      });
-    }}
-  >
-    click
-  </button>
 }
 ```
 
@@ -97,6 +104,8 @@ export function App() {
 }
 ```
 
+More detail about `use-mutative` can be found in [API docs](https://github.com/unadlib/use-mutative/blob/main/docs/modules.md)
+
 ### Patches
 
 In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative` or `useMutativeReducer`, that can provide you the ability to get that patches from pervious action.
@@ -115,3 +124,7 @@ const [state, dispatch, patches, inversePatches] = useMutativeReducer(
 ```
 
 patches format will follow https://jsonpatch.com/, but the `"path"` field be array structure.
+
+## License
+
+`use-mutative` is [MIT licensed](https://github.com/unadlib/use-mutative/blob/main/LICENSE).

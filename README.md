@@ -8,6 +8,14 @@ A hook to use [Mutative](https://github.com/unadlib/mutative) as a React hook to
 
 ## Installation
 
+Yarn
+
+```bash
+yarn add mutative use-mutative
+```
+
+NPM
+
 ```bash
 npm install mutative use-mutative
 ```
