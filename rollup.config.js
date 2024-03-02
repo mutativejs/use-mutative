@@ -30,6 +30,7 @@ export default {
       sourcemap: true,
       globals: {
         mutative: 'Mutative',
+        react: 'React',
       },
     },
   ],
@@ -42,5 +43,5 @@ export default {
     }),
     terser(),
   ],
-  external: ['mutative'],
+  external: ['mutative', 'react'],
 };
