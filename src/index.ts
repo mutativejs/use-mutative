@@ -40,11 +40,23 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
   ? [Immutable<S>, Updater<S>]
   : [S, Updater<S>];
 
+/**
+ * `useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
+ */
 function useMutative<
   S,
   F extends boolean = false,
   O extends PatchesOptions = false
->(initialValue: S, options?: Options<O, F>) {
+>(
+  /**
+   * The initial state. You may optionally provide an initializer function to calculate the initial state.
+   */
+  initialValue: S,
+  /**
+   * Options for the `useMutative` hook.
+   */
+  options?: Options<O, F>
+) {
   const [state, setState] = useState(() => {
     const initialState =
       typeof initialValue === 'function' ? initialValue() : initialValue;
@@ -116,6 +128,9 @@ function useMutativeReducer<
   options?: Options<O, F>
 ): ReducerResult<S, A, O, F>;
 
+/**
+ * `useMutativeReducer` is a hook that is similar to `useReducer` but it uses `mutative` to handle the state updates.
+ */
 function useMutativeReducer<
   S,
   A,
@@ -123,9 +138,21 @@ function useMutativeReducer<
   F extends boolean = false,
   O extends PatchesOptions = false
 >(
+  /**
+   * A function that returns the next state tree, given the current state tree and the action to handle.
+   */
   reducer: Reducer<S, A>,
+  /**
+   * The initial state. You may optionally provide an initializer function to calculate the initial state.
+   */
   initializerArg: S & I,
+  /**
+   * An initializer function that returns the initial state. It will be called with `initializerArg`.
+   */
   initializer?: (arg: S & I) => S,
+  /**
+   * Options for the `useMutativeReducer` hook.
+   */
   options?: Options<O, F>
 ): ReducerResult<S, A, O, F> {
   const ref = useRef<[Patches, Patches]>([[], []]);

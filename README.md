@@ -22,6 +22,8 @@ npm install mutative use-mutative
 Provide you can create immutable state easily with mutable way.
 
 ```tsx
+import { useMutative } from 'use-mutative';
+
 export function App() {
   const [state, setState] = useMutative(
     {
@@ -60,14 +62,19 @@ export function App() {
 
 Provide you can create immutable state easily with mutable way in reducer way.
 
+> For return values that do not contain any drafts, you can use `rawReturn()` to wrap this return value to improve performance. It ensure that the return value is only returned explicitly.
+
 ```tsx
+import { rawReturn } from 'mutative';
+import { useMutativeReducer } from 'use-mutative';
+
 function reducer(
   draft: State,
   action: { type: 'reset' | 'increment' | 'decrement' }
 ) {
   switch (action.type) {
     case 'reset':
-      return initialState;
+      return rawReturn(initialState);
     case 'increment':
       return void draft.count++;
     case 'decrement':
@@ -99,17 +106,12 @@ const [state, setState, patches, inversePatches] = useMutative(initState, {
   enablePatches: true,
 });
 
-const [state, dispatch, patchState] = useMutativeReducer(
+const [state, dispatch, patches, inversePatches] = useMutativeReducer(
   reducer,
   initState,
   initializer,
   { enablePatches: true }
 );
-
-// actions be that actions that are applied in previous state.
-const [actions, patchGroup] = patchState;
-
-const [patches, inversePatches] = patches;
 ```
 
 patches format will follow https://jsonpatch.com/, but the `"path"` field be array structure.
