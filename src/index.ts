@@ -48,7 +48,7 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
  * ```ts
  * import { act, renderHook } from '@testing-library/react';
  *
- * import { useMutative } from './src/index';
+ * import { useMutative } from '../src/index';
  *
  * const { result } = renderHook(() => useMutative({ items: [1] }));
  * const [state, setState] = result.current;
@@ -155,7 +155,7 @@ function useMutativeReducer<
  * import { act, renderHook } from '@testing-library/react';
  * import { type Draft } from 'mutative';
  *
- * import { useMutativeReducer } from './src/index';
+ * import { useMutativeReducer } from '../src/index';
  *
  * const { result } = renderHook(() =>
  *   useMutativeReducer(

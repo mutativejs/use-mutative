@@ -1,7 +1,7 @@
 # useMutative
 
-![](https://github.com/unadlib/use-mutative/actions/workflows/main-merge.yml/badge.svg)
 ![](https://github.com/unadlib/use-mutative/actions/workflows/npm-publish.yml/badge.svg)
+![Node CI](https://github.com/unadlib/mutability/workflows/Node%20CI/badge.svg)
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 

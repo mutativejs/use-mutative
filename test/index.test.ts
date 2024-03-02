@@ -6,7 +6,7 @@ import React from 'react';
 import { useMutative, useMutativeReducer } from '../src/index';
 
 test('test "mutative" function', () => {
-  jsdocTests('./src/index.ts');
+  jsdocTests('../src/index.ts', __dirname);
 });
 
 describe('useMutative', () => {
