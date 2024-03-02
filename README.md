@@ -94,6 +94,8 @@ export function App() {
 }
 ```
 
+More detail about `use-mutative` can be found in [API docs](https://github.com/unadlib/use-mutative/blob/main/docs/modules.md)
+
 ### Patches
 
 In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative` or `useMutativeReducer`, that can provide you the ability to get that patches from pervious action.
