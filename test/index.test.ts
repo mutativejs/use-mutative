@@ -80,6 +80,27 @@ describe('useMutative', () => {
     expect(state2).toEqual({ items: [1, 2] });
   });
 
+  it('[useMutative] with multiple updates', () => {
+    const { result } = renderHook(() =>
+      useMutative({
+        items: [1],
+      })
+    );
+
+    const [state, setState] = result.current;
+    act(() => {
+      setState((draft) => {
+        draft.items.push(2);
+      });
+
+      setState((draft) => {
+        draft.items.push(3);
+      });
+    });
+    const [nextState] = result.current;
+    expect(nextState).toEqual({ items: [1, 2, 3] });
+  });
+
   it('[useMutative] with patches', () => {
     const { result } = renderHook(() =>
       useMutative(
