@@ -12,6 +12,7 @@ import {
   useMemo,
   useRef,
   Dispatch,
+  useEffect,
 } from 'react';
 
 type PatchesOptions =
@@ -37,8 +38,8 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
   | object
   ? [F extends true ? Immutable<S> : S, Updater<S>, Patches<O>, Patches<O>]
   : F extends true
-  ? [Immutable<S>, Updater<S>]
-  : [S, Updater<S>];
+    ? [Immutable<S>, Updater<S>]
+    : [S, Updater<S>];
 
 /**
  * `useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
@@ -64,7 +65,7 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
 function useMutative<
   S,
   F extends boolean = false,
-  O extends PatchesOptions = false
+  O extends PatchesOptions = false,
 >(
   /**
    * The initial state. You may optionally provide an initializer function to calculate the initial state.
@@ -75,21 +76,64 @@ function useMutative<
    */
   options?: Options<O, F>
 ) {
-  const [state, setState] = useState(() => {
-    const initialState =
-      typeof initialValue === 'function' ? initialValue() : initialValue;
-    return options?.enablePatches ? [initialState, [], []] : initialState;
+  const patchesRef = useRef<{
+    patches: Patches;
+    inversePatches: Patches;
+  }>({
+    patches: [],
+    inversePatches: [],
   });
+  //#region support strict mode and concurrent features
+  const count = useRef(0);
+  const renderCount = useRef(0);
+  let currentCount = count.current;
+  useEffect(() => {
+    count.current = currentCount;
+    renderCount.current = currentCount;
+  });
+  currentCount += 1;
+  renderCount.current += 1;
+  //#endregion
+  const [state, setState] = useState(() =>
+    typeof initialValue === 'function' ? initialValue() : initialValue
+  );
   const updateState = useCallback((updater: any) => {
     setState((latest: any) => {
-      const currentState = options?.enablePatches ? latest[0] : latest;
       const updaterFn = typeof updater === 'function' ? updater : () => updater;
-      return create(currentState, updaterFn, options);
+      const result = create(latest, updaterFn, options);
+      if (options?.enablePatches) {
+        // check render count, support strict mode and concurrent features
+        if (
+          renderCount.current === count.current ||
+          renderCount.current === count.current + 1
+        ) {
+          Array.prototype.push.apply(patchesRef.current.patches, result[1]);
+          // `inversePatches` should be in reverse order when multiple setState() executions
+          Array.prototype.unshift.apply(
+            patchesRef.current.inversePatches,
+            result[2]
+          );
+        }
+        return result[0];
+      }
+      return result;
     });
   }, []);
+  useEffect(() => {
+    if (options?.enablePatches) {
+      // Reset `patchesRef` when the component is rendered each time
+      patchesRef.current.patches = [];
+      patchesRef.current.inversePatches = [];
+    }
+  });
   return (
     options?.enablePatches
-      ? [state[0], updateState, state[1], state[2]]
+      ? [
+          state,
+          updateState,
+          patchesRef.current.patches,
+          patchesRef.current.inversePatches,
+        ]
       : [state, updateState]
   ) as Result<InitialValue<S>, O, F>;
 }
@@ -98,12 +142,12 @@ type ReducerResult<
   S,
   A,
   O extends PatchesOptions,
-  F extends boolean
+  F extends boolean,
 > = O extends true | object
   ? [F extends true ? Immutable<S> : S, Dispatch<A>, Patches<O>, Patches<O>]
   : F extends true
-  ? [Immutable<S>, Dispatch<A>]
-  : [S, Dispatch<A>];
+    ? [Immutable<S>, Dispatch<A>]
+    : [S, Dispatch<A>];
 
 type Reducer<S, A> = (draftState: Draft<S>, action: A) => void | S | undefined;
 
@@ -112,7 +156,7 @@ function useMutativeReducer<
   A,
   I,
   F extends boolean = false,
-  O extends PatchesOptions = false
+  O extends PatchesOptions = false,
 >(
   reducer: Reducer<S, A>,
   initializerArg: S & I,
@@ -125,7 +169,7 @@ function useMutativeReducer<
   A,
   I,
   F extends boolean = false,
-  O extends PatchesOptions = false
+  O extends PatchesOptions = false,
 >(
   reducer: Reducer<S, A>,
   initializerArg: I,
@@ -137,7 +181,7 @@ function useMutativeReducer<
   S,
   A,
   F extends boolean = false,
-  O extends PatchesOptions = false
+  O extends PatchesOptions = false,
 >(
   reducer: Reducer<S, A>,
   initialState: S,
@@ -182,7 +226,7 @@ function useMutativeReducer<
   A,
   I,
   F extends boolean = false,
-  O extends PatchesOptions = false
+  O extends PatchesOptions = false,
 >(
   /**
    * A function that returns the next state tree, given the current state tree and the action to handle.
@@ -201,7 +245,24 @@ function useMutativeReducer<
    */
   options?: Options<O, F>
 ): ReducerResult<S, A, O, F> {
-  const ref = useRef<[Patches, Patches]>([[], []]);
+  const patchesRef = useRef<{
+    patches: Patches;
+    inversePatches: Patches;
+  }>({
+    patches: [],
+    inversePatches: [],
+  });
+  //#region support strict mode and concurrent features
+  const count = useRef(0);
+  const renderCount = useRef(0);
+  let currentCount = count.current;
+  useEffect(() => {
+    count.current = currentCount;
+    renderCount.current = currentCount;
+  });
+  currentCount += 1;
+  renderCount.current += 1;
+  //#endregion
   const cachedReducer: any = useMemo(
     () => (state: any, action: any) => {
       const result: any = create(
@@ -210,7 +271,18 @@ function useMutativeReducer<
         options
       );
       if (options?.enablePatches) {
-        ref.current = [result[1], result[2]];
+        // check render count, support strict mode and concurrent features
+        if (
+          renderCount.current === count.current ||
+          renderCount.current === count.current + 1
+        ) {
+          Array.prototype.push.apply(patchesRef.current.patches, result[1]);
+          // `inversePatches` should be in reverse order when multiple setState() executions
+          Array.prototype.unshift.apply(
+            patchesRef.current.inversePatches,
+            result[2]
+          );
+        }
         return result[0];
       }
       return result;
@@ -222,8 +294,20 @@ function useMutativeReducer<
     initializerArg as any,
     initializer as any
   );
+  useEffect(() => {
+    if (options?.enablePatches) {
+      // Reset `patchesRef` when the component is rendered each time
+      patchesRef.current.patches = [];
+      patchesRef.current.inversePatches = [];
+    }
+  });
   return options?.enablePatches
-    ? [result[0], result[1], ref.current[0], ref.current[1]]
+    ? [
+        result[0],
+        result[1],
+        patchesRef.current.patches,
+        patchesRef.current.inversePatches,
+      ]
     : result;
 }
 

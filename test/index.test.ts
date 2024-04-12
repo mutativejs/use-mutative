@@ -1,7 +1,7 @@
 import { jsdocTests } from 'jsdoc-tests';
 import { act, renderHook } from '@testing-library/react';
-import { rawReturn, type Draft } from 'mutative';
-import React from 'react';
+import { rawReturn, type Draft, apply } from 'mutative';
+import React, { useState } from 'react';
 
 import { useMutative, useMutativeReducer } from '../src/index';
 
@@ -138,6 +138,312 @@ describe('useMutative', () => {
     const [state3] = result.current;
     expect(state3).toEqual({ items: [123] });
   });
+
+  it('[useMutative] with patches and multiple updates', () => {
+    const baseState = [1];
+    const { result } = renderHook(() =>
+      useMutative(() => baseState, { enablePatches: true })
+    );
+
+    expect(result.current).toHaveLength(4);
+
+    let [state, setState, patches, inversePatches] = result.current;
+    expect(state).toEqual([1]);
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    act(() => {
+      setState((draft) => {
+        draft.push(2);
+        draft.push(999);
+      });
+      setState((draft) => {
+        draft.push(3);
+        draft.push(4);
+      });
+      setState((draft) => {
+        draft.shift();
+        draft.push(5);
+      });
+    });
+
+    [state, setState, patches, inversePatches] = result.current;
+    const mutateState = () => {
+      const state = [1];
+      state.push(2);
+      state.push(999);
+      //
+      state.push(3);
+      state.push(4);
+      //
+      state.shift();
+      state.push(5);
+      return state;
+    };
+    expect(baseState).toEqual([1]);
+    expect(state).toEqual([2, 999, 3, 4, 5]);
+    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(patches).toEqual([
+      { op: 'add', path: [1], value: 2 },
+      { op: 'add', path: [2], value: 999 },
+      { op: 'add', path: [3], value: 3 },
+      { op: 'add', path: [4], value: 4 },
+      { op: 'replace', path: [0], value: 2 },
+      { op: 'replace', path: [1], value: 999 },
+      { op: 'replace', path: [2], value: 3 },
+      { op: 'replace', path: [3], value: 4 },
+      { op: 'replace', path: [4], value: 5 },
+    ]);
+    expect(inversePatches).toEqual([
+      { op: 'replace', path: [0], value: 1 },
+      { op: 'replace', path: [1], value: 2 },
+      { op: 'replace', path: [2], value: 999 },
+      { op: 'replace', path: [3], value: 3 },
+      { op: 'replace', path: [4], value: 4 },
+      { op: 'replace', path: ['length'], value: 3 },
+      { op: 'replace', path: ['length'], value: 1 },
+    ]);
+    expect(apply(baseState, patches)).toEqual(state);
+    expect(apply(state, inversePatches)).toEqual(baseState);
+  });
+
+  it('[useMutative] with patches and multiple updates, other state ', () => {
+    const baseState = [1];
+    const { result } = renderHook(() => {
+      return [
+        useMutative(() => baseState, { enablePatches: true }) as any,
+        useState(0),
+      ];
+    });
+
+    let [[state, setState, patches, inversePatches], [state0, setState0]] =
+      result.current;
+    expect(state0).toEqual(0);
+    expect(state).toEqual([1]);
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    act(() => {
+      setState0(1);
+    });
+
+    [[state, setState, patches, inversePatches], [state0, setState0]] =
+      result.current;
+    expect(state0).toEqual(1);
+    expect(state).toEqual([1]);
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    act(() => {
+      setState((draft: any) => {
+        draft.push(2);
+        draft.push(999);
+      });
+      setState((draft: any) => {
+        draft.push(3);
+        draft.push(4);
+      });
+      setState((draft: any) => {
+        draft.shift();
+        draft.push(5);
+      });
+    });
+
+    [[state, setState, patches, inversePatches], [state0, setState0]] =
+      result.current;
+    const mutateState = () => {
+      const state = [1];
+      state.push(2);
+      state.push(999);
+      //
+      state.push(3);
+      state.push(4);
+      //
+      state.shift();
+      state.push(5);
+      return state;
+    };
+    expect(baseState).toEqual([1]);
+    expect(state).toEqual([2, 999, 3, 4, 5]);
+    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(patches).toEqual([
+      { op: 'add', path: [1], value: 2 },
+      { op: 'add', path: [2], value: 999 },
+      { op: 'add', path: [3], value: 3 },
+      { op: 'add', path: [4], value: 4 },
+      { op: 'replace', path: [0], value: 2 },
+      { op: 'replace', path: [1], value: 999 },
+      { op: 'replace', path: [2], value: 3 },
+      { op: 'replace', path: [3], value: 4 },
+      { op: 'replace', path: [4], value: 5 },
+    ]);
+    expect(inversePatches).toEqual([
+      { op: 'replace', path: [0], value: 1 },
+      { op: 'replace', path: [1], value: 2 },
+      { op: 'replace', path: [2], value: 999 },
+      { op: 'replace', path: [3], value: 3 },
+      { op: 'replace', path: [4], value: 4 },
+      { op: 'replace', path: ['length'], value: 3 },
+      { op: 'replace', path: ['length'], value: 1 },
+    ]);
+    expect(apply(baseState, patches)).toEqual(state);
+    expect(apply(state, inversePatches)).toEqual(baseState);
+  });
+
+  it('[useMutative] with patches and multiple updates in StrictMode', () => {
+    const baseState = [1];
+    const { result } = renderHook(
+      () => useMutative(() => baseState, { enablePatches: true }),
+      { wrapper: React.StrictMode }
+    );
+
+    expect(result.current).toHaveLength(4);
+
+    let [state, setState, patches, inversePatches] = result.current;
+    expect(state).toEqual([1]);
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    act(() => {
+      setState((draft) => {
+        draft.push(2);
+        draft.push(999);
+      });
+      setState((draft) => {
+        draft.push(3);
+        draft.push(4);
+      });
+      setState((draft) => {
+        draft.shift();
+        draft.push(5);
+      });
+    });
+
+    [state, setState, patches, inversePatches] = result.current;
+    const mutateState = () => {
+      const state = [1];
+      state.push(2);
+      state.push(999);
+      //
+      state.push(3);
+      state.push(4);
+      //
+      state.shift();
+      state.push(5);
+      return state;
+    };
+    expect(baseState).toEqual([1]);
+    expect(state).toEqual([2, 999, 3, 4, 5]);
+    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(patches).toEqual([
+      { op: 'add', path: [1], value: 2 },
+      { op: 'add', path: [2], value: 999 },
+      { op: 'add', path: [3], value: 3 },
+      { op: 'add', path: [4], value: 4 },
+      { op: 'replace', path: [0], value: 2 },
+      { op: 'replace', path: [1], value: 999 },
+      { op: 'replace', path: [2], value: 3 },
+      { op: 'replace', path: [3], value: 4 },
+      { op: 'replace', path: [4], value: 5 },
+    ]);
+    expect(inversePatches).toEqual([
+      { op: 'replace', path: [0], value: 1 },
+      { op: 'replace', path: [1], value: 2 },
+      { op: 'replace', path: [2], value: 999 },
+      { op: 'replace', path: [3], value: 3 },
+      { op: 'replace', path: [4], value: 4 },
+      { op: 'replace', path: ['length'], value: 3 },
+      { op: 'replace', path: ['length'], value: 1 },
+    ]);
+    expect(apply(baseState, patches)).toEqual(state);
+    expect(apply(state, inversePatches)).toEqual(baseState);
+  });
+
+  it('[useMutative] with patches and multiple updates, other state in StrictMode', () => {
+    const baseState = [1];
+    const { result } = renderHook(
+      () => {
+        return [
+          useMutative(() => baseState, { enablePatches: true }) as any,
+          useState(0),
+        ];
+      },
+      { wrapper: React.StrictMode }
+    );
+
+    let [[state, setState, patches, inversePatches], [state0, setState0]] =
+      result.current;
+    expect(state0).toEqual(0);
+    expect(state).toEqual([1]);
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    act(() => {
+      setState0(1);
+    });
+
+    [[state, setState, patches, inversePatches], [state0, setState0]] =
+      result.current;
+    expect(state0).toEqual(1);
+    expect(state).toEqual([1]);
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    act(() => {
+      setState((draft: any) => {
+        draft.push(2);
+        draft.push(999);
+      });
+      setState((draft: any) => {
+        draft.push(3);
+        draft.push(4);
+      });
+      setState((draft: any) => {
+        draft.shift();
+        draft.push(5);
+      });
+    });
+
+    [[state, setState, patches, inversePatches], [state0, setState0]] =
+      result.current;
+    const mutateState = () => {
+      const state = [1];
+      state.push(2);
+      state.push(999);
+      //
+      state.push(3);
+      state.push(4);
+      //
+      state.shift();
+      state.push(5);
+      return state;
+    };
+    expect(baseState).toEqual([1]);
+    expect(state).toEqual([2, 999, 3, 4, 5]);
+    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(patches).toEqual([
+      { op: 'add', path: [1], value: 2 },
+      { op: 'add', path: [2], value: 999 },
+      { op: 'add', path: [3], value: 3 },
+      { op: 'add', path: [4], value: 4 },
+      { op: 'replace', path: [0], value: 2 },
+      { op: 'replace', path: [1], value: 999 },
+      { op: 'replace', path: [2], value: 3 },
+      { op: 'replace', path: [3], value: 4 },
+      { op: 'replace', path: [4], value: 5 },
+    ]);
+    expect(inversePatches).toEqual([
+      { op: 'replace', path: [0], value: 1 },
+      { op: 'replace', path: [1], value: 2 },
+      { op: 'replace', path: [2], value: 999 },
+      { op: 'replace', path: [3], value: 3 },
+      { op: 'replace', path: [4], value: 4 },
+      { op: 'replace', path: ['length'], value: 3 },
+      { op: 'replace', path: ['length'], value: 1 },
+    ]);
+    expect(apply(baseState, patches)).toEqual(state);
+    expect(apply(state, inversePatches)).toEqual(baseState);
+  });
 });
 
 describe('useMutativeReducer', () => {
@@ -216,6 +522,56 @@ describe('useMutativeReducer', () => {
   });
 
   it('[useMutativeReducer] with patches', () => {
+    const { result } = renderHook(() =>
+      useMutativeReducer(
+        reducer,
+        initState,
+        (state) => {
+          state.title = 'changed title ';
+          return state;
+        },
+        { enablePatches: true }
+      )
+    );
+
+    expect(result.current).toHaveLength(4);
+
+    const [state, dispatch, patches, inversePatches] = result.current;
+    expect(state).toEqual({
+      title: 'changed title ',
+      cars: [{ text: '🚘' }],
+    });
+
+    expect(patches).toEqual([]);
+    expect(inversePatches).toEqual([]);
+
+    expect(typeof dispatch).toBe('function');
+
+    act(() => {
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+    });
+
+    const [state1, dispatch1, patches1, inversePatches1] = result.current;
+    expect(state1).toEqual({
+      title: 'changed title ll',
+      cars: [{ text: '🚘' }, { text: '🚘' }, { text: '🚘' }],
+    });
+    expect(apply(state, patches1)).toEqual(state1);
+    expect(apply(state1, inversePatches1)).toEqual(state);
+
+    act(() => dispatch1({ type: 'reset' }));
+
+    const [state2, dispatch2, patches2, inversePatches2] = result.current;
+    expect(state2).toEqual({
+      title: 'changed title ',
+      cars: [{ text: '🚘' }],
+    });
+    expect(apply(state1, patches2)).toEqual(state2);
+    expect(apply(state2, inversePatches2)).toEqual(state1);
+  });
+
+  it('[useMutativeReducer] with patches in StrictMode', () => {
     const { result } = renderHook(
       () =>
         useMutativeReducer(
@@ -243,22 +599,18 @@ describe('useMutativeReducer', () => {
 
     expect(typeof dispatch).toBe('function');
 
-    act(() => dispatch({ type: 'increment' }));
+    act(() => {
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+    });
 
     const [state1, dispatch1, patches1, inversePatches1] = result.current;
     expect(state1).toEqual({
-      title: 'changed title l',
-      cars: [{ text: '🚘' }, { text: '🚘' }],
+      title: 'changed title ll',
+      cars: [{ text: '🚘' }, { text: '🚘' }, { text: '🚘' }],
     });
-
-    expect(patches1).toEqual([
-      { op: 'add', path: ['cars', 1], value: { text: '🚘' } },
-      { op: 'replace', path: ['title'], value: 'changed title l' },
-    ]);
-    expect(inversePatches1).toEqual([
-      { op: 'replace', path: ['cars', 'length'], value: 1 },
-      { op: 'replace', path: ['title'], value: 'changed title ' },
-    ]);
+    expect(apply(state, patches1)).toEqual(state1);
+    expect(apply(state1, inversePatches1)).toEqual(state);
 
     act(() => dispatch1({ type: 'reset' }));
 
@@ -267,24 +619,8 @@ describe('useMutativeReducer', () => {
       title: 'changed title ',
       cars: [{ text: '🚘' }],
     });
-
-    expect(patches2).toEqual([
-      {
-        op: 'replace',
-        path: [],
-        value: { title: 'changed title ', cars: [{ text: '🚘' }] },
-      },
-    ]);
-    expect(inversePatches2).toEqual([
-      {
-        op: 'replace',
-        path: [],
-        value: {
-          title: 'changed title l',
-          cars: [{ text: '🚘' }, { text: '🚘' }],
-        },
-      },
-    ]);
+    expect(apply(state1, patches2)).toEqual(state2);
+    expect(apply(state2, inversePatches2)).toEqual(state1);
   });
 
   it('[useMutativeReducer] show warning when change `enablePatches` dynamically', () => {
@@ -319,58 +655,55 @@ describe('useMutativeReducer', () => {
       dispatch({ type: 'increment' });
     });
 
-    const [state, , patches, inversePatches] = result.current;
+    const copyInitState = JSON.parse(JSON.stringify(initState));
+    const mutateState = () => {
+      const dispatch = (action: any) => reducer(copyInitState, action);
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      return copyInitState;
+    };
 
-    expect([state, patches, inversePatches]).toEqual([
-      {
-        title: 'changed title lllll',
-        cars: [
-          {
-            text: '🚘',
-          },
-          {
-            text: '🚘',
-          },
-          {
-            text: '🚘',
-          },
-          {
-            text: '🚘',
-          },
-          {
-            text: '🚘',
-          },
-          {
-            text: '🚘',
-          },
-        ],
-      },
-      [
-        {
-          op: 'add',
-          path: ['cars', 5],
-          value: {
-            text: '🚘',
-          },
-        },
-        {
-          op: 'replace',
-          path: ['title'],
-          value: 'changed title lllll',
-        },
-      ],
-      [
-        {
-          op: 'replace',
-          path: ['cars', 'length'],
-          value: 5,
-        },
-        {
-          op: 'replace',
-          path: ['title'],
-          value: 'changed title llll',
-        },
-      ],
-    ]);
+    const [state, , patches, inversePatches] = result.current;
+    expect(state).toEqual(mutateState());
+    expect(apply(initState, patches)).toEqual(state);
+    expect(apply(state, inversePatches)).toEqual(initState);
+  });
+
+  it('[useMutativeReducer] show dispatch many times in one tick and StrictMode', () => {
+    const { result } = renderHook(
+      () =>
+        useMutativeReducer(reducer, initState, undefined, {
+          enablePatches: true,
+        }),
+      { wrapper: React.StrictMode }
+    );
+    const [, dispatch] = result.current;
+
+    act(() => {
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+    });
+
+    const copyInitState = JSON.parse(JSON.stringify(initState));
+    const mutateState = () => {
+      const dispatch = (action: any) => reducer(copyInitState, action);
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      dispatch({ type: 'increment' });
+      return copyInitState;
+    };
+
+    const [state, , patches, inversePatches] = result.current;
+    expect(state).toEqual(mutateState());
+    expect(apply(initState, patches)).toEqual(state);
+    expect(apply(state, inversePatches)).toEqual(initState);
   });
 });
