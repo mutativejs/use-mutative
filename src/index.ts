@@ -81,13 +81,12 @@ function useMutative<
     return options?.enablePatches ? [initialState, [], []] : initialState;
   });
   const updateState = useCallback((updater: any) => {
-    const currentState = options?.enablePatches ? state[0] : state;
-    if (typeof updater === 'function') {
-      setState(create(currentState, updater, options));
-    } else {
-      setState(create(currentState, () => updater, options));
-    }
-  }, [state]);
+    setState((latest: any) => {
+      const currentState = options?.enablePatches ? latest[0] : latest;
+      const updaterFn = typeof updater === 'function' ? updater : () => updater;
+      return create(currentState, updaterFn, options);
+    });
+  }, []);
   return (
     options?.enablePatches
       ? [state[0], updateState, state[1], state[2]]
