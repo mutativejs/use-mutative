@@ -2,14 +2,14 @@ use-mutative / [Exports](modules.md)
 
 # useMutative
 
-![Node CI](https://github.com/unadlib/use-mutative/workflows/Node%20CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/unadlib/use-mutative/badge.svg?branch=main)](https://coveralls.io/github/unadlib/use-mutative?branch=main)
+![Node CI](https://github.com/mutativejs/use-mutative/workflows/Node%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/mutativejs/use-mutative/badge.svg?branch=main)](https://coveralls.io/github/mutativejs/use-mutative?branch=main)
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 
-A hook to use [Mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
+A hook to use [Mutative](https://github.com/mutativejs/mutative) as a React hook to efficient update react state immutable with mutable way.
 
-`useMutative` is 2-6x faster than `useState` with spread operation, more than 10x faster than `useImmer`. [Read more about the performance comparison in Mutative](https://mutative.js.org/docs/getting-started/performance).
+`useMutative` is 2-6x faster than `useState()` with spread operation, more than 10x faster than `useImmer()`. [Read more about the performance comparison in Mutative](https://mutative.js.org/docs/getting-started/performance).
 
 ## Installation
 
@@ -111,7 +111,7 @@ export function App() {
 }
 ```
 
-More detail about `use-mutative` can be found in [API docs](https://github.com/unadlib/use-mutative/blob/main/docs/modules.md)
+More detail about `use-mutative` can be found in [API docs](https://github.com/mutativejs/use-mutative/blob/main/docs/modules.md)
 
 ### Patches
 
@@ -134,4 +134,4 @@ patches format will follow https://jsonpatch.com/, but the `"path"` field be arr
 
 ## License
 
-`use-mutative` is [MIT licensed](https://github.com/unadlib/use-mutative/blob/main/LICENSE).
+`use-mutative` is [MIT licensed](https://github.com/mutativejs/use-mutative/blob/main/LICENSE).

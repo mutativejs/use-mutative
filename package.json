@@ -26,14 +26,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unadlib/use-mutative.git"
+    "url": "git+https://github.com/mutativejs/use-mutative.git"
   },
   "author": "unadlib",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/unadlib/use-mutative/issues"
+    "url": "https://github.com/mutativejs/use-mutative/issues"
   },
-  "homepage": "https://github.com/unadlib/use-mutative#readme",
+  "homepage": "https://github.com/mutativejs/use-mutative#readme",
   "keywords": [
     "react",
     "hook",
