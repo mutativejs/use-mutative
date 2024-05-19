@@ -1,4 +1,4 @@
-# useMutative
+# use-mutative
 
 ![Node CI](https://github.com/mutativejs/use-mutative/workflows/Node%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/mutativejs/use-mutative/badge.svg?branch=main)](https://coveralls.io/github/mutativejs/use-mutative?branch=main)
@@ -7,7 +7,7 @@
 
 A hook to use [Mutative](https://github.com/mutativejs/mutative) as a React hook to efficient update react state immutable with mutable way.
 
-`useMutative` is 2-6x faster than `useState()` with spread operation, more than 10x faster than `useImmer()`. [Read more about the performance comparison in Mutative](https://mutative.js.org/docs/getting-started/performance).
+`use-mutative` is 2-6x faster than `useState()` with spread operation, more than 10x faster than `useImmer()`. [Read more about the performance comparison in Mutative](https://mutative.js.org/docs/getting-started/performance).
 
 ## Installation
 
@@ -114,7 +114,7 @@ More detail about `use-mutative` can be found in [API docs](https://github.com/m
 
 ### Patches
 
-In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative` or `useMutativeReducer`, that can provide you the ability to get that patches from pervious action.
+In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative()` or `useMutativeReducer()`, that can provide you the ability to get that patches from pervious action.
 
 ```tsx
 const [state, setState, patches, inversePatches] = useMutative(initState, {
