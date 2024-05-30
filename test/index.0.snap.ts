@@ -3,9 +3,9 @@ import { act, renderHook } from '@testing-library/react';
 import { useMutative } from '../src/index';
 
 const { result } = renderHook(() => useMutative({ items: [1] }));
-const [state, setState] = result.current;
+const [state, mutateState] = result.current;
 act(() =>
-  setState((draft) => {
+  mutateState((draft) => {
     draft.items.push(2);
   })
 );

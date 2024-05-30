@@ -52,9 +52,9 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
  * import { useMutative } from '../src/index';
  *
  * const { result } = renderHook(() => useMutative({ items: [1] }));
- * const [state, setState] = result.current;
+ * const [state, mutateState] = result.current;
  * act(() =>
- *   setState((draft) => {
+ *   mutateState((draft) => {
  *     draft.items.push(2);
  *   })
  * );
@@ -94,11 +94,11 @@ function useMutative<
   currentCount += 1;
   renderCount.current += 1;
   //#endregion
-  const [state, setState] = useState(() =>
+  const [state, mutateState] = useState(() =>
     typeof initialValue === 'function' ? initialValue() : initialValue
   );
   const updateState = useCallback((updater: any) => {
-    setState((latest: any) => {
+    mutateState((latest: any) => {
       const updaterFn = typeof updater === 'function' ? updater : () => updater;
       const result = create(latest, updaterFn, options);
       if (options?.enablePatches) {
@@ -108,7 +108,7 @@ function useMutative<
           renderCount.current === count.current + 1
         ) {
           Array.prototype.push.apply(patchesRef.current.patches, result[1]);
-          // `inversePatches` should be in reverse order when multiple setState() executions
+          // `inversePatches` should be in reverse order when multiple mutateState() executions
           Array.prototype.unshift.apply(
             patchesRef.current.inversePatches,
             result[2]
@@ -277,7 +277,7 @@ function useMutativeReducer<
           renderCount.current === count.current + 1
         ) {
           Array.prototype.push.apply(patchesRef.current.patches, result[1]);
-          // `inversePatches` should be in reverse order when multiple setState() executions
+          // `inversePatches` should be in reverse order when multiple mutateState() executions
           Array.prototype.unshift.apply(
             patchesRef.current.inversePatches,
             result[2]

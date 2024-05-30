@@ -12,9 +12,9 @@ test('test "mutative" function', () => {
 describe('useMutative', () => {
   it('[useMutative] with normal init state', () => {
     const { result } = renderHook(() => useMutative({ items: [1] }));
-    const [state, setState] = result.current;
+    const [state, mutateState] = result.current;
     act(() =>
-      setState((draft) => {
+      mutateState((draft) => {
         draft.items.push(2);
       })
     );
@@ -29,12 +29,12 @@ describe('useMutative', () => {
 
     expect(result.current).toHaveLength(2);
 
-    const [state, setState] = result.current;
+    const [state, mutateState] = result.current;
     expect(state).toEqual([1]);
-    expect(typeof setState).toBe('function');
+    expect(typeof mutateState).toBe('function');
 
     // eslint-disable-next-line prettier/prettier
-    act(() => setState(() => [1, 2]));
+    act(() => mutateState(() => [1, 2]));
 
     const [state2] = result.current;
     expect(state2).toEqual([1, 2]);
@@ -47,11 +47,11 @@ describe('useMutative', () => {
 
     expect(result.current).toHaveLength(2);
 
-    const [state, setState] = result.current;
+    const [state, mutateState] = result.current;
     expect(state).toEqual([1]);
-    expect(typeof setState).toBe('function');
+    expect(typeof mutateState).toBe('function');
 
-    act(() => setState([1, 2]));
+    act(() => mutateState([1, 2]));
 
     const [state2] = result.current;
     expect(state2).toEqual([1, 2]);
@@ -66,12 +66,12 @@ describe('useMutative', () => {
 
     expect(result.current).toHaveLength(2);
 
-    const [state, setState] = result.current;
+    const [state, mutateState] = result.current;
     expect(state).toEqual({ items: [1] });
-    expect(typeof setState).toBe('function');
+    expect(typeof mutateState).toBe('function');
 
     act(() =>
-      setState((draft) => {
+      mutateState((draft) => {
         draft.items.push(2);
       })
     );
@@ -87,13 +87,13 @@ describe('useMutative', () => {
       })
     );
 
-    const [state, setState] = result.current;
+    const [state, mutateState] = result.current;
     act(() => {
-      setState((draft) => {
+      mutateState((draft) => {
         draft.items.push(2);
       });
 
-      setState((draft) => {
+      mutateState((draft) => {
         draft.items.push(3);
       });
     });
@@ -113,13 +113,13 @@ describe('useMutative', () => {
 
     expect(result.current).toHaveLength(4);
 
-    const [state, setState, patches, inversePatches] = result.current;
+    const [state, mutateState, patches, inversePatches] = result.current;
     expect(state).toEqual({ items: [1] });
     expect(patches).toEqual([]);
     expect(inversePatches).toEqual([]);
 
     act(() =>
-      setState((draft) => {
+      mutateState((draft) => {
         draft.items.push(2);
       })
     );
@@ -134,7 +134,7 @@ describe('useMutative', () => {
       { op: 'replace', path: ['items', 'length'], value: 1 },
     ]);
 
-    act(() => setState({ items: [123] }));
+    act(() => mutateState({ items: [123] }));
     const [state3] = result.current;
     expect(state3).toEqual({ items: [123] });
   });
@@ -147,28 +147,28 @@ describe('useMutative', () => {
 
     expect(result.current).toHaveLength(4);
 
-    let [state, setState, patches, inversePatches] = result.current;
+    let [state, mutateState, patches, inversePatches] = result.current;
     expect(state).toEqual([1]);
     expect(patches).toEqual([]);
     expect(inversePatches).toEqual([]);
 
     act(() => {
-      setState((draft) => {
+      mutateState((draft) => {
         draft.push(2);
         draft.push(999);
       });
-      setState((draft) => {
+      mutateState((draft) => {
         draft.push(3);
         draft.push(4);
       });
-      setState((draft) => {
+      mutateState((draft) => {
         draft.shift();
         draft.push(5);
       });
     });
 
-    [state, setState, patches, inversePatches] = result.current;
-    const mutateState = () => {
+    [state, mutateState, patches, inversePatches] = result.current;
+    const alterState = () => {
       const state = [1];
       state.push(2);
       state.push(999);
@@ -182,7 +182,7 @@ describe('useMutative', () => {
     };
     expect(baseState).toEqual([1]);
     expect(state).toEqual([2, 999, 3, 4, 5]);
-    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(alterState()).toEqual([2, 999, 3, 4, 5]);
     expect(patches).toEqual([
       { op: 'add', path: [1], value: 2 },
       { op: 'add', path: [2], value: 999 },
@@ -216,18 +216,20 @@ describe('useMutative', () => {
       ];
     });
 
-    let [[state, setState, patches, inversePatches], [state0, setState0]] =
-      result.current;
+    let [
+      [state, mutateState, patches, inversePatches],
+      [state0, mutateState0],
+    ] = result.current;
     expect(state0).toEqual(0);
     expect(state).toEqual([1]);
     expect(patches).toEqual([]);
     expect(inversePatches).toEqual([]);
 
     act(() => {
-      setState0(1);
+      mutateState0(1);
     });
 
-    [[state, setState, patches, inversePatches], [state0, setState0]] =
+    [[state, mutateState, patches, inversePatches], [state0, mutateState0]] =
       result.current;
     expect(state0).toEqual(1);
     expect(state).toEqual([1]);
@@ -235,23 +237,23 @@ describe('useMutative', () => {
     expect(inversePatches).toEqual([]);
 
     act(() => {
-      setState((draft: any) => {
+      mutateState((draft: any) => {
         draft.push(2);
         draft.push(999);
       });
-      setState((draft: any) => {
+      mutateState((draft: any) => {
         draft.push(3);
         draft.push(4);
       });
-      setState((draft: any) => {
+      mutateState((draft: any) => {
         draft.shift();
         draft.push(5);
       });
     });
 
-    [[state, setState, patches, inversePatches], [state0, setState0]] =
+    [[state, mutateState, patches, inversePatches], [state0, mutateState0]] =
       result.current;
-    const mutateState = () => {
+    const alterState = () => {
       const state = [1];
       state.push(2);
       state.push(999);
@@ -265,7 +267,7 @@ describe('useMutative', () => {
     };
     expect(baseState).toEqual([1]);
     expect(state).toEqual([2, 999, 3, 4, 5]);
-    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(alterState()).toEqual([2, 999, 3, 4, 5]);
     expect(patches).toEqual([
       { op: 'add', path: [1], value: 2 },
       { op: 'add', path: [2], value: 999 },
@@ -299,28 +301,28 @@ describe('useMutative', () => {
 
     expect(result.current).toHaveLength(4);
 
-    let [state, setState, patches, inversePatches] = result.current;
+    let [state, mutateState, patches, inversePatches] = result.current;
     expect(state).toEqual([1]);
     expect(patches).toEqual([]);
     expect(inversePatches).toEqual([]);
 
     act(() => {
-      setState((draft) => {
+      mutateState((draft) => {
         draft.push(2);
         draft.push(999);
       });
-      setState((draft) => {
+      mutateState((draft) => {
         draft.push(3);
         draft.push(4);
       });
-      setState((draft) => {
+      mutateState((draft) => {
         draft.shift();
         draft.push(5);
       });
     });
 
-    [state, setState, patches, inversePatches] = result.current;
-    const mutateState = () => {
+    [state, mutateState, patches, inversePatches] = result.current;
+    const alterState = () => {
       const state = [1];
       state.push(2);
       state.push(999);
@@ -334,7 +336,7 @@ describe('useMutative', () => {
     };
     expect(baseState).toEqual([1]);
     expect(state).toEqual([2, 999, 3, 4, 5]);
-    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(alterState()).toEqual([2, 999, 3, 4, 5]);
     expect(patches).toEqual([
       { op: 'add', path: [1], value: 2 },
       { op: 'add', path: [2], value: 999 },
@@ -371,18 +373,20 @@ describe('useMutative', () => {
       { wrapper: React.StrictMode }
     );
 
-    let [[state, setState, patches, inversePatches], [state0, setState0]] =
-      result.current;
+    let [
+      [state, mutateState, patches, inversePatches],
+      [state0, mutateState0],
+    ] = result.current;
     expect(state0).toEqual(0);
     expect(state).toEqual([1]);
     expect(patches).toEqual([]);
     expect(inversePatches).toEqual([]);
 
     act(() => {
-      setState0(1);
+      mutateState0(1);
     });
 
-    [[state, setState, patches, inversePatches], [state0, setState0]] =
+    [[state, mutateState, patches, inversePatches], [state0, mutateState0]] =
       result.current;
     expect(state0).toEqual(1);
     expect(state).toEqual([1]);
@@ -390,23 +394,23 @@ describe('useMutative', () => {
     expect(inversePatches).toEqual([]);
 
     act(() => {
-      setState((draft: any) => {
+      mutateState((draft: any) => {
         draft.push(2);
         draft.push(999);
       });
-      setState((draft: any) => {
+      mutateState((draft: any) => {
         draft.push(3);
         draft.push(4);
       });
-      setState((draft: any) => {
+      mutateState((draft: any) => {
         draft.shift();
         draft.push(5);
       });
     });
 
-    [[state, setState, patches, inversePatches], [state0, setState0]] =
+    [[state, mutateState, patches, inversePatches], [state0, mutateState0]] =
       result.current;
-    const mutateState = () => {
+    const alterState = () => {
       const state = [1];
       state.push(2);
       state.push(999);
@@ -420,7 +424,7 @@ describe('useMutative', () => {
     };
     expect(baseState).toEqual([1]);
     expect(state).toEqual([2, 999, 3, 4, 5]);
-    expect(mutateState()).toEqual([2, 999, 3, 4, 5]);
+    expect(alterState()).toEqual([2, 999, 3, 4, 5]);
     expect(patches).toEqual([
       { op: 'add', path: [1], value: 2 },
       { op: 'add', path: [2], value: 999 },
