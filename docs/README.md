@@ -35,7 +35,7 @@ Provide you can create immutable state easily with mutable way.
 import { useMutative } from 'use-mutative';
 
 export function App() {
-  const [state, setState] = useMutative({
+  const [state, mutateState] = useMutative({
     foo: 'bar',
     list: [{ text: 'todo' }],
   });
@@ -44,7 +44,7 @@ export function App() {
       <button
         onClick={() => {
           // set value with draft mutable
-          setState((draft) => {
+          mutateState((draft) => {
             draft.foo = `${draft.foo} 2`;
             draft.list.push({ text: 'todo 2' });
           });
@@ -55,7 +55,7 @@ export function App() {
       <button
         onClick={() => {
           // also can override value directly
-          setState({
+          mutateState({
             foo: 'bar 2',
             list: [{ text: 'todo 2' }],
           });
@@ -118,7 +118,7 @@ More detail about `use-mutative` can be found in [API docs](https://github.com/m
 In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative` or `useMutativeReducer`, that can provide you the ability to get that patches from pervious action.
 
 ```tsx
-const [state, setState, patches, inversePatches] = useMutative(initState, {
+const [state, mutateState, patches, inversePatches] = useMutative(initState, {
   enablePatches: true,
 });
 
