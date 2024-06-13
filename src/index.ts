@@ -52,9 +52,9 @@ type Result<S, O extends PatchesOptions, F extends boolean> = O extends
  * import { useMutative } from '../src/index';
  *
  * const { result } = renderHook(() => useMutative({ items: [1] }));
- * const [state, setState] = result.current;
+ * const [state, updateState] = result.current;
  * act(() =>
- *   setState((draft) => {
+ *   updateState((draft) => {
  *     draft.items.push(2);
  *   })
  * );
