@@ -1,6 +1,6 @@
 on: ["pull_request"]
 
-name: Test Coveralls
+name: Test Coverage
 
 jobs:
 

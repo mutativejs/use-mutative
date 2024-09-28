@@ -1,6 +1,6 @@
 on: ["push"]
 
-name: Push Test
+name: Push Test Coveralls
 
 jobs:
 
