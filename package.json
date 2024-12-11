@@ -92,6 +92,7 @@
     }
   },
   "peerDependencies": {
-    "mutative": "^1.0"
+    "mutative": "^1.0",
+    "react": "^16.8 || ^17.0 || ^18.0 || ^19.0"
   }
 }
