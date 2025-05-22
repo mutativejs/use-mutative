@@ -307,7 +307,7 @@ function useMutativeReducer<
         result[1],
         patchesRef.current.patches,
         patchesRef.current.inversePatches,
-      ]
+      ] as ReducerResult<S, A, O, F>
     : result;
 }
 
