@@ -4,6 +4,7 @@ import {
   type Patches,
   type Options,
   type Draft,
+  type PatchesOptions,
 } from 'mutative';
 import {
   useState,
@@ -11,22 +12,9 @@ import {
   useCallback,
   useMemo,
   useRef,
-  Dispatch,
+  type Dispatch,
   useEffect,
 } from 'react';
-
-type PatchesOptions =
-  | boolean
-  | {
-      /**
-       * The default value is `true`. If it's `true`, the path will be an array, otherwise it is a string.
-       */
-      pathAsArray?: boolean;
-      /**
-       * The default value is `true`. If it's `true`, the array length will be included in the patches, otherwise no include array length.
-       */
-      arrayLengthAssignment?: boolean;
-    };
 
 type DraftFunction<S> = (draft: Draft<S>) => void;
 type Updater<S> = (value: S | (() => S) | DraftFunction<S>) => void;
@@ -302,12 +290,12 @@ function useMutativeReducer<
     }
   });
   return options?.enablePatches
-    ? [
+    ? ([
         result[0],
         result[1],
         patchesRef.current.patches,
         patchesRef.current.inversePatches,
-      ] as ReducerResult<S, A, O, F>
+      ] as ReducerResult<S, A, O, F>)
     : result;
 }
 
