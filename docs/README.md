@@ -69,7 +69,7 @@ export function App() {
 
 Provide you can create immutable state easily with mutable way in reducer way.
 
-> A reducer changes the draft and returns nothing, or returns a new state. Wrap a returned value that holds no drafts in [`rawReturn()`](https://mutative.js.org/docs/api-reference/rawreturn), so that Mutative skips searching it for drafts and development builds don't warn about it. Never wrap a value that holds drafts.
+> A reducer changes the draft and returns nothing, or returns a new state. Wrap a returned value that holds no drafts in [`rawReturn()`](https://mutative.js.org/docs/api-reference/rawreturn), so that Mutative skips searching it for drafts, except in strict mode, and development builds don't warn about it. Never wrap a value that holds drafts.
 
 ```tsx
 import { rawReturn, type Draft } from 'mutative';

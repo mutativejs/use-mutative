@@ -91,8 +91,8 @@ function useMutative<
       const updaterFn =
         typeof updater === 'function'
           ? updater
-          : // A value passed to `updateState()` is created outside the recipe and
-            // holds no drafts, so `rawReturn()` skips searching it for drafts.
+          : // A value passed to `updateState()` holds no drafts, so `rawReturn()`
+            // skips searching it, except in strict mode, and the warning about it.
             () =>
               typeof updater === 'object' && updater !== null
                 ? rawReturn(updater)
