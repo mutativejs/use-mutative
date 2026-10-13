@@ -133,7 +133,7 @@ Since Mutative v2 (see the [migration guide](https://mutative.js.org/docs/advanc
 
 - The patches of a nested draft come before those of its parents, as in Immer. Applying them gives the same state as before, but tests that pin the patches of Mutative v1 may need new snapshots.
 - A patch value can be the same object that the next state holds, and with `enableAutoFreeze` it is frozen with the state. Copy a patch value before you change it.
-- Passing a new value to the setter of `useMutative()` yields a `replace` patch of the root path `[]`. `apply()` with `mutable: true` throws for such a patch, since it cannot replace the state in place.
+- A new state that replaces the current one, whether passed to the setter of `useMutative()` or returned from a recipe or a reducer, yields a `replace` patch of the root path `[]`. `apply()` with `mutable: true` throws for such a patch, since it cannot replace the state in place.
 
 ## License
 
