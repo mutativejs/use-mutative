@@ -23,6 +23,8 @@ NPM
 npm install mutative use-mutative
 ```
 
+`use-mutative` 2.x requires `mutative` 2.x. If your app still depends on `mutative` 1.x, use `use-mutative` 1.x, or upgrade with the [migration guide from Mutative v1 to v2](https://mutative.js.org/docs/advanced-guides/migration-v2).
+
 ## API
 
 ### useMutative()
@@ -63,7 +65,7 @@ export function App() {
 
 Provide you can create immutable state easily with mutable way in reducer way.
 
-> For return values that do not contain any drafts, you can use `rawReturn()` to wrap this return value to improve performance. It ensure that the return value is only returned explicitly.
+> A reducer changes the draft and returns nothing, or returns a new state. Wrap a returned value that holds no drafts in [`rawReturn()`](https://mutative.js.org/docs/api-reference/rawreturn), so that Mutative skips searching it for drafts and development builds don't warn about it. Never wrap a value that holds drafts.
 
 ```tsx
 import { rawReturn } from 'mutative';
@@ -122,6 +124,12 @@ const [state, dispatch, patches, inversePatches] = useMutativeReducer(
 ```
 
 patches format will follow https://jsonpatch.com/, but the `"path"` field be array structure.
+
+Since Mutative v2 (see the [migration guide](https://mutative.js.org/docs/advanced-guides/migration-v2#patches)):
+
+- The patches of a nested draft come before those of its parents, as in Immer. Applying them gives the same state as before, but tests that pin the patches of Mutative v1 may need new snapshots.
+- A patch value can be the same object that the next state holds, and with `enableAutoFreeze` it is frozen with the state. Copy a patch value before you change it.
+- Passing a new value to the setter of `useMutative()` yields a `replace` patch of the root path `[]`. `apply()` with `mutable: true` throws for such a patch, since it cannot replace the state in place.
 
 ## License
 
