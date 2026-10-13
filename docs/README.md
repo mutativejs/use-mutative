@@ -1,15 +1,17 @@
-use-mutative / [Exports](modules.md)
+**use-mutative**
 
-# useMutative
+***
+
+# use-mutative
 
 ![Node CI](https://github.com/mutativejs/use-mutative/workflows/Node%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/mutativejs/use-mutative/badge.svg?branch=main)](https://coveralls.io/github/mutativejs/use-mutative?branch=main)
 [![npm](https://img.shields.io/npm/v/use-mutative.svg)](https://www.npmjs.com/package/use-mutative)
 ![license](https://img.shields.io/npm/l/use-mutative)
 
-A hook to use [Mutative](https://github.com/mutativejs/mutative) as a React hook to efficient update react state immutable with mutable way.
+A hook to use [Mutative](https://github.com/unadlib/mutative) as a React hook to efficient update react state immutable with mutable way.
 
-`useMutative` is 2-6x faster than `useState()` with spread operation, more than 10x faster than `useImmer()`. [Read more about the performance comparison in Mutative](https://mutative.js.org/docs/getting-started/performance).
+`use-mutative` is 2-6x faster than `useState()` with spread operation, more than 10x faster than `useImmer()`. [Read more about the performance comparison in Mutative](https://mutative.js.org/docs/getting-started/performance).
 
 ## Installation
 
@@ -25,6 +27,8 @@ NPM
 npm install mutative use-mutative
 ```
 
+`use-mutative` 2.x requires `mutative` 2.x. If your app still depends on `mutative` 1.x, use `use-mutative` 1.x, or upgrade with the [migration guide from Mutative v1 to v2](https://mutative.js.org/docs/advanced-guides/migration-v2).
+
 ## API
 
 ### useMutative()
@@ -35,18 +39,14 @@ Provide you can create immutable state easily with mutable way.
 import { useMutative } from 'use-mutative';
 
 export function App() {
-  const [state, setState] = useMutative({
-    foo: 'bar',
-    list: [{ text: 'todo' }],
-  });
+  const [todos, setTodos] = useMutative([{ text: 'todo' }]);
   return (
     <>
       <button
         onClick={() => {
-          // set value with draft mutable
-          setState((draft) => {
-            draft.foo = `${draft.foo} 2`;
-            draft.list.push({ text: 'todo 2' });
+          // set todos with draft mutable
+          setTodos((draft) => {
+            draft.push({ text: 'todo 2' });
           });
         }}
       >
@@ -55,10 +55,7 @@ export function App() {
       <button
         onClick={() => {
           // also can override value directly
-          setState({
-            foo: 'bar 2',
-            list: [{ text: 'todo 2' }],
-          });
+          setTodos([{ text: 'todo' }, { text: 'todo 2' }]);
         }}
       >
         click
@@ -72,10 +69,10 @@ export function App() {
 
 Provide you can create immutable state easily with mutable way in reducer way.
 
-> For return values that do not contain any drafts, you can use `rawReturn()` to wrap this return value to improve performance. It ensure that the return value is only returned explicitly.
+> A reducer changes the draft and returns nothing, or returns a new state. Wrap a returned value that holds no drafts in [`rawReturn()`](https://mutative.js.org/docs/api-reference/rawreturn), so that Mutative skips searching it for drafts and development builds don't warn about it. Never wrap a value that holds drafts.
 
 ```tsx
-import { rawReturn } from 'mutative';
+import { rawReturn, type Draft } from 'mutative';
 import { useMutativeReducer } from 'use-mutative';
 
 const initialState = {
@@ -115,10 +112,10 @@ More detail about `use-mutative` can be found in [API docs](https://github.com/m
 
 ### Patches
 
-In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative` or `useMutativeReducer`, that can provide you the ability to get that patches from pervious action.
+In some cases, you may want to get that patches from your update, we can pass `{ enablePatches: true }` options in `useMutative()` or `useMutativeReducer()`, that can provide you the ability to get that patches from pervious action.
 
 ```tsx
-const [state, setState, patches, inversePatches] = useMutative(initState, {
+const [state, updateState, patches, inversePatches] = useMutative(initState, {
   enablePatches: true,
 });
 
@@ -131,6 +128,12 @@ const [state, dispatch, patches, inversePatches] = useMutativeReducer(
 ```
 
 patches format will follow https://jsonpatch.com/, but the `"path"` field be array structure.
+
+Since Mutative v2 (see the [migration guide](https://mutative.js.org/docs/advanced-guides/migration-v2#patches)):
+
+- The patches of a nested draft come before those of its parents, as in Immer. Applying them gives the same state as before, but tests that pin the patches of Mutative v1 may need new snapshots.
+- A patch value can be the same object that the next state holds, and with `enableAutoFreeze` it is frozen with the state. Copy a patch value before you change it.
+- Passing a new value to the setter of `useMutative()` yields a `replace` patch of the root path `[]`. `apply()` with `mutable: true` throws for such a patch, since it cannot replace the state in place.
 
 ## License
 

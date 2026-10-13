@@ -1,140 +1,132 @@
-[use-mutative](README.md) / Exports
+[**use-mutative**](README.md)
+
+***
 
 # use-mutative
-
-## Table of contents
-
-### Type Aliases
-
-- [DraftFunction](modules.md#draftfunction)
-- [Reducer](modules.md#reducer)
-- [Updater](modules.md#updater)
-
-### Functions
-
-- [useMutative](modules.md#usemutative)
-- [useMutativeReducer](modules.md#usemutativereducer)
 
 ## Type Aliases
 
 ### DraftFunction
 
-Ƭ **DraftFunction**\<`S`\>: (`draft`: `Draft`\<`S`\>) => `void`
+> **DraftFunction**\<`S`\> = (`draft`) => `void`
 
-#### Type parameters
+Defined in: [index.ts:20](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L20)
 
-| Name |
-| :------ |
-| `S` |
+#### Type Parameters
 
-#### Type declaration
+##### S
 
-▸ (`draft`): `void`
-
-##### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `draft` | `Draft`\<`S`\> |
-
-##### Returns
-
-`void`
-
-#### Defined in
-
-[index.ts:31](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L31)
-
-___
-
-### Reducer
-
-Ƭ **Reducer**\<`S`, `A`\>: (`draftState`: `Draft`\<`S`\>, `action`: `A`) => `void` \| `S` \| `undefined`
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `S` |
-| `A` |
-
-#### Type declaration
-
-▸ (`draftState`, `action`): `void` \| `S` \| `undefined`
-
-##### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `draftState` | `Draft`\<`S`\> |
-| `action` | `A` |
-
-##### Returns
-
-`void` \| `S` \| `undefined`
-
-#### Defined in
-
-[index.ts:152](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L152)
-
-___
-
-### Updater
-
-Ƭ **Updater**\<`S`\>: (`value`: `S` \| () => `S` \| [`DraftFunction`](modules.md#draftfunction)\<`S`\>) => `void`
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `S` |
-
-#### Type declaration
-
-▸ (`value`): `void`
-
-##### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `value` | `S` \| () => `S` \| [`DraftFunction`](modules.md#draftfunction)\<`S`\> |
-
-##### Returns
-
-`void`
-
-#### Defined in
-
-[index.ts:32](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L32)
-
-## Functions
-
-### useMutative
-
-▸ **useMutative**\<`S`, `F`, `O`\>(`initialValue`, `options?`): `Result`\<`InitialValue`\<`S`\>, `O`, `F`\>
-
-`useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
-
-#### Type parameters
-
-| Name | Type |
-| :------ | :------ |
-| `S` | `S` |
-| `F` | extends `boolean` = ``false`` |
-| `O` | extends `PatchesOptions` = ``false`` |
+`S`
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `initialValue` | `S` | The initial state. You may optionally provide an initializer function to calculate the initial state. |
-| `options?` | `ExternalOptions`\<`O`, `F`\> | Options for the `useMutative` hook. |
+##### draft
+
+`Draft`\<`S`\>
+
+#### Returns
+
+`void`
+
+***
+
+### Reducer
+
+> **Reducer**\<`S`, `A`\> = (`draftState`, `action`) => `void` \| `S` \| `undefined`
+
+Defined in: [index.ts:149](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L149)
+
+#### Type Parameters
+
+##### S
+
+`S`
+
+##### A
+
+`A`
+
+#### Parameters
+
+##### draftState
+
+`Draft`\<`S`\>
+
+##### action
+
+`A`
+
+#### Returns
+
+`void` \| `S` \| `undefined`
+
+***
+
+### Updater
+
+> **Updater**\<`S`\> = (`value`) => `void`
+
+Defined in: [index.ts:21](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L21)
+
+#### Type Parameters
+
+##### S
+
+`S`
+
+#### Parameters
+
+##### value
+
+`S` \| (() => `S`) \| [`DraftFunction`](#draftfunction)\<`S`\>
+
+#### Returns
+
+`void`
+
+## Functions
+
+### useMutative()
+
+> **useMutative**\<`S`, `F`, `O`\>(`initialValue`, `options?`): `Result`\<`InitialValue`\<`S`\>, `O`, `F`\>
+
+Defined in: [index.ts:54](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L54)
+
+`useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
+
+#### Type Parameters
+
+##### S
+
+`S`
+
+##### F
+
+`F` *extends* `boolean` = `false`
+
+##### O
+
+`O` *extends* `PatchesOptions` = `false`
+
+#### Parameters
+
+##### initialValue
+
+`S`
+
+The initial state. You may optionally provide an initializer function to calculate the initial state.
+
+##### options?
+
+`ExternalOptions`\<`O`, `F`\>
+
+Options for the `useMutative` hook.
 
 #### Returns
 
 `Result`\<`InitialValue`\<`S`\>, `O`, `F`\>
 
-**`Example`**
+#### Example
 
 ```ts
 import { act, renderHook } from '@testing-library/react';
@@ -142,9 +134,9 @@ import { act, renderHook } from '@testing-library/react';
 import { useMutative } from '../src/index';
 
 const { result } = renderHook(() => useMutative({ items: [1] }));
-const [state, setState] = result.current;
+const [state, updateState] = result.current;
 act(() =>
-  setState((draft) => {
+  updateState((draft) => {
     draft.items.push(2);
   })
 );
@@ -152,42 +144,13 @@ const [nextState] = result.current;
 expect(nextState).toEqual({ items: [1, 2] });
 ```
 
-#### Defined in
+***
 
-[index.ts:65](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L65)
-
-___
-
-### useMutativeReducer
-
-▸ **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+### useMutativeReducer()
 
 `useMutativeReducer` is a hook that is similar to `useReducer` but it uses `mutative` to handle the state updates.
 
-#### Type parameters
-
-| Name | Type |
-| :------ | :------ |
-| `S` | `S` |
-| `A` | `A` |
-| `I` | `I` |
-| `F` | extends `boolean` = ``false`` |
-| `O` | extends `PatchesOptions` = ``false`` |
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `reducer` | [`Reducer`](modules.md#reducer)\<`S`, `A`\> |
-| `initializerArg` | `S` & `I` |
-| `initializer` | (`arg`: `S` & `I`) => `S` |
-| `options?` | `ExternalOptions`\<`O`, `F`\> |
-
-#### Returns
-
-`ReducerResult`\<`S`, `A`, `O`, `F`\>
-
-**`Example`**
+#### Example
 
 ```ts
 import { act, renderHook } from '@testing-library/react';
@@ -216,125 +179,148 @@ act(() => dispatch({ type: 'increment' }));
 expect(result.current[0]).toEqual({ count: 1 });
 ```
 
-#### Defined in
+#### Call Signature
 
-[index.ts:154](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L154)
+> **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
 
-▸ **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+Defined in: [index.ts:151](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L151)
 
-`useMutativeReducer` is a hook that is similar to `useReducer` but it uses `mutative` to handle the state updates.
+##### Type Parameters
 
-#### Type parameters
+###### S
 
-| Name | Type |
-| :------ | :------ |
-| `S` | `S` |
-| `A` | `A` |
-| `I` | `I` |
-| `F` | extends `boolean` = ``false`` |
-| `O` | extends `PatchesOptions` = ``false`` |
+`S`
 
-#### Parameters
+###### A
 
-| Name | Type |
-| :------ | :------ |
-| `reducer` | [`Reducer`](modules.md#reducer)\<`S`, `A`\> |
-| `initializerArg` | `I` |
-| `initializer` | (`arg`: `I`) => `S` |
-| `options?` | `ExternalOptions`\<`O`, `F`\> |
+`A`
 
-#### Returns
+###### I
 
-`ReducerResult`\<`S`, `A`, `O`, `F`\>
+`I`
 
-**`Example`**
+###### F
 
-```ts
-import { act, renderHook } from '@testing-library/react';
-import { type Draft } from 'mutative';
+`F` *extends* `boolean` = `false`
 
-import { useMutativeReducer } from '../src/index';
+###### O
 
-const { result } = renderHook(() =>
-  useMutativeReducer(
-    (
-      draft: Draft<Readonly<{ count: number }>>,
-      action: {
-        type: 'increment';
-      }
-    ) => {
-      switch (action.type) {
-        case 'increment':
-          draft.count += 1;
-      }
-    },
-    { count: 0 }
-  )
-);
-const [, dispatch] = result.current;
-act(() => dispatch({ type: 'increment' }));
-expect(result.current[0]).toEqual({ count: 1 });
-```
+`O` *extends* `PatchesOptions` = `false`
 
-#### Defined in
+##### Parameters
 
-[index.ts:167](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L167)
+###### reducer
 
-▸ **useMutativeReducer**\<`S`, `A`, `F`, `O`\>(`reducer`, `initialState`, `initializer?`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+[`Reducer`](#reducer)\<`S`, `A`\>
 
-`useMutativeReducer` is a hook that is similar to `useReducer` but it uses `mutative` to handle the state updates.
+###### initializerArg
 
-#### Type parameters
+`S` & `I`
 
-| Name | Type |
-| :------ | :------ |
-| `S` | `S` |
-| `A` | `A` |
-| `F` | extends `boolean` = ``false`` |
-| `O` | extends `PatchesOptions` = ``false`` |
+###### initializer
 
-#### Parameters
+(`arg`) => `S`
 
-| Name | Type |
-| :------ | :------ |
-| `reducer` | [`Reducer`](modules.md#reducer)\<`S`, `A`\> |
-| `initialState` | `S` |
-| `initializer?` | `undefined` |
-| `options?` | `ExternalOptions`\<`O`, `F`\> |
+###### options?
 
-#### Returns
+`ExternalOptions`\<`O`, `F`\>
+
+##### Returns
 
 `ReducerResult`\<`S`, `A`, `O`, `F`\>
 
-**`Example`**
+#### Call Signature
 
-```ts
-import { act, renderHook } from '@testing-library/react';
-import { type Draft } from 'mutative';
+> **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
 
-import { useMutativeReducer } from '../src/index';
+Defined in: [index.ts:164](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L164)
 
-const { result } = renderHook(() =>
-  useMutativeReducer(
-    (
-      draft: Draft<Readonly<{ count: number }>>,
-      action: {
-        type: 'increment';
-      }
-    ) => {
-      switch (action.type) {
-        case 'increment':
-          draft.count += 1;
-      }
-    },
-    { count: 0 }
-  )
-);
-const [, dispatch] = result.current;
-act(() => dispatch({ type: 'increment' }));
-expect(result.current[0]).toEqual({ count: 1 });
-```
+##### Type Parameters
 
-#### Defined in
+###### S
 
-[index.ts:180](https://github.com/mutativejs/use-mutative/blob/79aa600/src/index.ts#L180)
+`S`
+
+###### A
+
+`A`
+
+###### I
+
+`I`
+
+###### F
+
+`F` *extends* `boolean` = `false`
+
+###### O
+
+`O` *extends* `PatchesOptions` = `false`
+
+##### Parameters
+
+###### reducer
+
+[`Reducer`](#reducer)\<`S`, `A`\>
+
+###### initializerArg
+
+`I`
+
+###### initializer
+
+(`arg`) => `S`
+
+###### options?
+
+`ExternalOptions`\<`O`, `F`\>
+
+##### Returns
+
+`ReducerResult`\<`S`, `A`, `O`, `F`\>
+
+#### Call Signature
+
+> **useMutativeReducer**\<`S`, `A`, `F`, `O`\>(`reducer`, `initialState`, `initializer?`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+
+Defined in: [index.ts:177](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L177)
+
+##### Type Parameters
+
+###### S
+
+`S`
+
+###### A
+
+`A`
+
+###### F
+
+`F` *extends* `boolean` = `false`
+
+###### O
+
+`O` *extends* `PatchesOptions` = `false`
+
+##### Parameters
+
+###### reducer
+
+[`Reducer`](#reducer)\<`S`, `A`\>
+
+###### initialState
+
+`S`
+
+###### initializer?
+
+`undefined`
+
+###### options?
+
+`ExternalOptions`\<`O`, `F`\>
+
+##### Returns
+
+`ReducerResult`\<`S`, `A`, `O`, `F`\>
