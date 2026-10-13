@@ -10,7 +10,7 @@
 
 > **DraftFunction**\<`S`\> = (`draft`) => `void`
 
-Defined in: [index.ts:20](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L20)
+Defined in: [index.ts:20](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L20)
 
 #### Type Parameters
 
@@ -30,11 +30,25 @@ Defined in: [index.ts:20](https://github.com/mutativejs/use-mutative/blob/c5fb76
 
 ***
 
+### InitialValue
+
+> **InitialValue**\<`I`\> = `I` *extends* (...`args`) => infer R ? `R` : `I`
+
+Defined in: [index.ts:23](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L23)
+
+#### Type Parameters
+
+##### I
+
+`I` *extends* `any`
+
+***
+
 ### Reducer
 
 > **Reducer**\<`S`, `A`\> = (`draftState`, `action`) => `void` \| `S` \| `undefined`
 
-Defined in: [index.ts:149](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L149)
+Defined in: [index.ts:149](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L149)
 
 #### Type Parameters
 
@@ -62,11 +76,59 @@ Defined in: [index.ts:149](https://github.com/mutativejs/use-mutative/blob/c5fb7
 
 ***
 
+### ReducerResult
+
+> **ReducerResult**\<`S`, `A`, `O`, `F`\> = `O` *extends* `true` \| `object` ? \[`F` *extends* `true` ? `Immutable`\<`S`\> : `S`, `Dispatch`\<`A`\>, `Patches`\<`O`\>, `Patches`\<`O`\>\] : `F` *extends* `true` ? \[`Immutable`\<`S`\>, `Dispatch`\<`A`\>\] : \[`S`, `Dispatch`\<`A`\>\]
+
+Defined in: [index.ts:138](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L138)
+
+#### Type Parameters
+
+##### S
+
+`S`
+
+##### A
+
+`A`
+
+##### O
+
+`O` *extends* `PatchesOptions`
+
+##### F
+
+`F` *extends* `boolean`
+
+***
+
+### Result
+
+> **Result**\<`S`, `O`, `F`\> = `O` *extends* `true` \| `object` ? \[`F` *extends* `true` ? `Immutable`\<`S`\> : `S`, [`Updater`](#updater)\<`S`\>, `Patches`\<`O`\>, `Patches`\<`O`\>\] : `F` *extends* `true` ? \[`Immutable`\<`S`\>, [`Updater`](#updater)\<`S`\>\] : \[`S`, [`Updater`](#updater)\<`S`\>\]
+
+Defined in: [index.ts:25](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L25)
+
+#### Type Parameters
+
+##### S
+
+`S`
+
+##### O
+
+`O` *extends* `PatchesOptions`
+
+##### F
+
+`F` *extends* `boolean`
+
+***
+
 ### Updater
 
 > **Updater**\<`S`\> = (`value`) => `void`
 
-Defined in: [index.ts:21](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L21)
+Defined in: [index.ts:21](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L21)
 
 #### Type Parameters
 
@@ -88,9 +150,9 @@ Defined in: [index.ts:21](https://github.com/mutativejs/use-mutative/blob/c5fb76
 
 ### useMutative()
 
-> **useMutative**\<`S`, `F`, `O`\>(`initialValue`, `options?`): `Result`\<`InitialValue`\<`S`\>, `O`, `F`\>
+> **useMutative**\<`S`, `F`, `O`\>(`initialValue`, `options?`): [`Result`](#result)\<[`InitialValue`](#initialvalue)\<`S`\>, `O`, `F`\>
 
-Defined in: [index.ts:54](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L54)
+Defined in: [index.ts:54](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L54)
 
 `useMutative` is a hook that is similar to `useState` but it uses `mutative` to handle the state updates.
 
@@ -124,7 +186,7 @@ Options for the `useMutative` hook.
 
 #### Returns
 
-`Result`\<`InitialValue`\<`S`\>, `O`, `F`\>
+[`Result`](#result)\<[`InitialValue`](#initialvalue)\<`S`\>, `O`, `F`\>
 
 #### Example
 
@@ -181,9 +243,9 @@ expect(result.current[0]).toEqual({ count: 1 });
 
 #### Call Signature
 
-> **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+> **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): [`ReducerResult`](#reducerresult)\<`S`, `A`, `O`, `F`\>
 
-Defined in: [index.ts:151](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L151)
+Defined in: [index.ts:151](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L151)
 
 ##### Type Parameters
 
@@ -227,13 +289,13 @@ Defined in: [index.ts:151](https://github.com/mutativejs/use-mutative/blob/c5fb7
 
 ##### Returns
 
-`ReducerResult`\<`S`, `A`, `O`, `F`\>
+[`ReducerResult`](#reducerresult)\<`S`, `A`, `O`, `F`\>
 
 #### Call Signature
 
-> **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+> **useMutativeReducer**\<`S`, `A`, `I`, `F`, `O`\>(`reducer`, `initializerArg`, `initializer`, `options?`): [`ReducerResult`](#reducerresult)\<`S`, `A`, `O`, `F`\>
 
-Defined in: [index.ts:164](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L164)
+Defined in: [index.ts:164](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L164)
 
 ##### Type Parameters
 
@@ -277,13 +339,13 @@ Defined in: [index.ts:164](https://github.com/mutativejs/use-mutative/blob/c5fb7
 
 ##### Returns
 
-`ReducerResult`\<`S`, `A`, `O`, `F`\>
+[`ReducerResult`](#reducerresult)\<`S`, `A`, `O`, `F`\>
 
 #### Call Signature
 
-> **useMutativeReducer**\<`S`, `A`, `F`, `O`\>(`reducer`, `initialState`, `initializer?`, `options?`): `ReducerResult`\<`S`, `A`, `O`, `F`\>
+> **useMutativeReducer**\<`S`, `A`, `F`, `O`\>(`reducer`, `initialState`, `initializer?`, `options?`): [`ReducerResult`](#reducerresult)\<`S`, `A`, `O`, `F`\>
 
-Defined in: [index.ts:177](https://github.com/mutativejs/use-mutative/blob/c5fb768e10317aa20034e0d02052b94b0590d40a/src/index.ts#L177)
+Defined in: [index.ts:177](https://github.com/mutativejs/use-mutative/blob/0bcb2fc4b1d3fd16f337538133c580699133af39/src/index.ts#L177)
 
 ##### Type Parameters
 
@@ -323,4 +385,4 @@ Defined in: [index.ts:177](https://github.com/mutativejs/use-mutative/blob/c5fb7
 
 ##### Returns
 
-`ReducerResult`\<`S`, `A`, `O`, `F`\>
+[`ReducerResult`](#reducerresult)\<`S`, `A`, `O`, `F`\>

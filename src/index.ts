@@ -311,6 +311,9 @@ function useMutativeReducer<
 export {
   type DraftFunction,
   type Updater,
+  type InitialValue,
+  type Result,
+  type ReducerResult,
   type Reducer,
   useMutative,
   useMutativeReducer,
