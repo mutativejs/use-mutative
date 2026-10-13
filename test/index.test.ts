@@ -501,7 +501,7 @@ describe('useMutativeReducer', () => {
     switch (action.type) {
       case 'reset':
         return initState;
-      case 'reset':
+      case 'reset-with-rawReturn':
         // !!! this will improve the performance
         return rawReturn(initState);
       case 'increment':
@@ -679,6 +679,21 @@ describe('useMutativeReducer', () => {
     act(() => dispatch({ type: 'reset-with-rawReturn' }));
 
     expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
+  });
+
+  it('[useMutativeReducer] return rawReturn() without warnings in strict mode', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const { result } = renderHook(() =>
+      useMutativeReducer(reducer, initState, undefined, { strict: true })
+    );
+
+    act(() => result.current[1]({ type: 'increment' }));
+    act(() => result.current[1]({ type: 'reset-with-rawReturn' }));
+
+    expect(result.current[0]).toBe(initState);
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
   });
 
   it('[useMutativeReducer] show dispatch many times in one tick', () => {
