@@ -10,10 +10,12 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v7
+      # No `registry-url`: it writes an .npmrc that reads `NODE_AUTH_TOKEN`,
+      # which yarn v1 rejects while the variable is unset, and trusted
+      # publishing needs no token.
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-          registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
       - run: yarn
       - run: yarn build
