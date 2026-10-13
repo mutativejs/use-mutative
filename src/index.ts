@@ -1,5 +1,6 @@
 import {
   create,
+  rawReturn,
   type Immutable,
   type Patches,
   type Options,
@@ -87,7 +88,15 @@ function useMutative<
   );
   const updateState = useCallback((updater: any) => {
     setState((latest: any) => {
-      const updaterFn = typeof updater === 'function' ? updater : () => updater;
+      const updaterFn =
+        typeof updater === 'function'
+          ? updater
+          : // A value passed to `updateState()` is created outside the recipe and
+            // holds no drafts, so `rawReturn()` skips searching it for drafts.
+            () =>
+              typeof updater === 'object' && updater !== null
+                ? rawReturn(updater)
+                : updater;
       const result = create(latest, updaterFn, options);
       if (options?.enablePatches) {
         // check render count, support strict mode and concurrent features

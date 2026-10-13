@@ -57,6 +57,46 @@ describe('useMutative', () => {
     expect(state2).toEqual([1, 2]);
   });
 
+  it('[useMutative] set new values without warnings', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const { result } = renderHook(() => useMutative({ items: [1] }));
+    act(() => result.current[1]({ items: [2] }));
+    expect(result.current[0]).toEqual({ items: [2] });
+
+    const { result: strictResult } = renderHook(() =>
+      useMutative({ items: [1] }, { strict: true })
+    );
+    act(() => strictResult.current[1]({ items: [2] }));
+    expect(strictResult.current[0]).toEqual({ items: [2] });
+
+    const { result: countResult } = renderHook(() => useMutative(0));
+    act(() => countResult.current[1](1));
+    expect(countResult.current[0]).toBe(1);
+
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('[useMutative] set a new value with patches and auto-freeze', () => {
+    const baseState = { items: [1] };
+    const { result } = renderHook(() =>
+      useMutative(baseState, { enablePatches: true, enableAutoFreeze: true })
+    );
+    const nextState = { items: [2] };
+    act(() => result.current[1](nextState));
+
+    const [state, , patches, inversePatches] = result.current;
+    expect(state).toBe(nextState);
+    expect(Object.isFrozen(state)).toBe(true);
+    expect(Object.isFrozen(state.items)).toBe(true);
+    expect(patches).toEqual([{ op: 'replace', path: [], value: nextState }]);
+    expect(inversePatches).toEqual([
+      { op: 'replace', path: [], value: baseState },
+    ]);
+    expect(apply(baseState, patches)).toEqual(nextState);
+    expect(apply(nextState, inversePatches)).toEqual(baseState);
+  });
+
   it('[useMutative] with initializer', () => {
     const { result } = renderHook(() =>
       useMutative(() => ({
